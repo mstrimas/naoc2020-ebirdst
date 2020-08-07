@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="index.html"/>
-
+<link rel="next" href="single-species-multi-scale-site-selection.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -145,6 +145,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.5" data-path="access.html"><a href="access.html#load"><i class="fa fa-check"></i><b>1.5</b> Load data</a></li>
 <li class="chapter" data-level="1.6" data-path="access.html"><a href="access.html#map"><i class="fa fa-check"></i><b>1.6</b> Mapping</a></li>
 </ul></li>
+<li class="chapter" data-level="2" data-path="single-species-multi-scale-site-selection.html"><a href="single-species-multi-scale-site-selection.html"><i class="fa fa-check"></i><b>2</b> Single Species, Multi-Scale Site Selection</a><ul>
+<li class="chapter" data-level="2.1" data-path="access.html"><a href="access.html#objective"><i class="fa fa-check"></i><b>2.1</b> Objective</a></li>
+<li class="chapter" data-level="2.2" data-path="access.html"><a href="access.html#intro"><i class="fa fa-check"></i><b>2.2</b> Introduction</a></li>
+<li class="chapter" data-level="2.3" data-path="single-species-multi-scale-site-selection.html"><a href="single-species-multi-scale-site-selection.html#seasonal"><i class="fa fa-check"></i><b>2.3</b> Seasonal abundance data</a></li>
+<li class="chapter" data-level="2.4" data-path="single-species-multi-scale-site-selection.html"><a href="single-species-multi-scale-site-selection.html#rangewide"><i class="fa fa-check"></i><b>2.4</b> Range-wide site selection</a></li>
+<li class="chapter" data-level="2.5" data-path="single-species-multi-scale-site-selection.html"><a href="single-species-multi-scale-site-selection.html#local"><i class="fa fa-check"></i><b>2.5</b> Local Selection</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -182,20 +189,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="access.html#cb3-1"></a><span class="kw">glimpse</span>(ebirdst_runs)</span>
 <span id="cb3-2"><a href="access.html#cb3-2"></a><span class="co">#&gt; Rows: 610</span></span>
 <span id="cb3-3"><a href="access.html#cb3-3"></a><span class="co">#&gt; Columns: 14</span></span>
-<span id="cb3-4"><a href="access.html#cb3-4"></a><span class="co">#&gt; $ species_code                    [3m[90m&lt;chr&gt;[39m[23m &quot;bbwduc&quot;, &quot;fuwduc&quot;, &quot;empgoo&quot;, &quot;snogoo&quot;, &quot;ro…</span></span>
-<span id="cb3-5"><a href="access.html#cb3-5"></a><span class="co">#&gt; $ run_name                        [3m[90m&lt;chr&gt;[39m[23m &quot;bbwduc-ERD2018-EBIRD_SCIENCE-20191105-dc39…</span></span>
-<span id="cb3-6"><a href="access.html#cb3-6"></a><span class="co">#&gt; $ scientific_name                 [3m[90m&lt;chr&gt;[39m[23m &quot;Dendrocygna autumnalis&quot;, &quot;Dendrocygna bico…</span></span>
-<span id="cb3-7"><a href="access.html#cb3-7"></a><span class="co">#&gt; $ common_name                     [3m[90m&lt;chr&gt;[39m[23m &quot;Black-bellied Whistling-Duck&quot;, &quot;Fulvous Wh…</span></span>
-<span id="cb3-8"><a href="access.html#cb3-8"></a><span class="co">#&gt; $ breeding_start_dt               [3m[90m&lt;date&gt;[39m[23m 2018-05-24, 2018-05-10, 2018-05-24, 2018-0…</span></span>
-<span id="cb3-9"><a href="access.html#cb3-9"></a><span class="co">#&gt; $ breeding_end_dt                 [3m[90m&lt;date&gt;[39m[23m 2018-08-03, 2018-08-17, 2018-06-21, 2018-0…</span></span>
-<span id="cb3-10"><a href="access.html#cb3-10"></a><span class="co">#&gt; $ nonbreeding_start_dt            [3m[90m&lt;date&gt;[39m[23m 2018-01-18, 2018-11-30, NA, 2018-12-28, 20…</span></span>
-<span id="cb3-11"><a href="access.html#cb3-11"></a><span class="co">#&gt; $ nonbreeding_end_dt              [3m[90m&lt;date&gt;[39m[23m 2018-03-01, 2018-02-15, NA, 2018-01-11, 20…</span></span>
-<span id="cb3-12"><a href="access.html#cb3-12"></a><span class="co">#&gt; $ postbreeding_migration_start_dt [3m[90m&lt;date&gt;[39m[23m 2018-08-10, 2018-08-24, NA, 2018-08-24, 20…</span></span>
-<span id="cb3-13"><a href="access.html#cb3-13"></a><span class="co">#&gt; $ postbreeding_migration_end_dt   [3m[90m&lt;date&gt;[39m[23m 2018-01-11, 2018-11-23, NA, 2018-12-21, 20…</span></span>
-<span id="cb3-14"><a href="access.html#cb3-14"></a><span class="co">#&gt; $ prebreeding_migration_start_dt  [3m[90m&lt;date&gt;[39m[23m 2018-03-08, 2018-02-22, NA, 2018-01-18, 20…</span></span>
-<span id="cb3-15"><a href="access.html#cb3-15"></a><span class="co">#&gt; $ prebreeding_migration_end_dt    [3m[90m&lt;date&gt;[39m[23m 2018-05-17, 2018-05-03, NA, 2018-05-31, 20…</span></span>
-<span id="cb3-16"><a href="access.html#cb3-16"></a><span class="co">#&gt; $ year_round_start_dt             [3m[90m&lt;date&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, 2018-0…</span></span>
-<span id="cb3-17"><a href="access.html#cb3-17"></a><span class="co">#&gt; $ year_round_end_dt               [3m[90m&lt;date&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, 2018-1…</span></span></code></pre></div>
+<span id="cb3-4"><a href="access.html#cb3-4"></a><span class="co">#&gt; $ species_code                    &lt;chr&gt; &quot;bbwduc&quot;, &quot;fuwduc&quot;, &quot;empgoo&quot;, &quot;snogoo&quot;, &quot;ro…</span></span>
+<span id="cb3-5"><a href="access.html#cb3-5"></a><span class="co">#&gt; $ run_name                        &lt;chr&gt; &quot;bbwduc-ERD2018-EBIRD_SCIENCE-20191105-dc39…</span></span>
+<span id="cb3-6"><a href="access.html#cb3-6"></a><span class="co">#&gt; $ scientific_name                 &lt;chr&gt; &quot;Dendrocygna autumnalis&quot;, &quot;Dendrocygna bico…</span></span>
+<span id="cb3-7"><a href="access.html#cb3-7"></a><span class="co">#&gt; $ common_name                     &lt;chr&gt; &quot;Black-bellied Whistling-Duck&quot;, &quot;Fulvous Wh…</span></span>
+<span id="cb3-8"><a href="access.html#cb3-8"></a><span class="co">#&gt; $ breeding_start_dt               &lt;date&gt; 2018-05-24, 2018-05-10, 2018-05-24, 2018-0…</span></span>
+<span id="cb3-9"><a href="access.html#cb3-9"></a><span class="co">#&gt; $ breeding_end_dt                 &lt;date&gt; 2018-08-03, 2018-08-17, 2018-06-21, 2018-0…</span></span>
+<span id="cb3-10"><a href="access.html#cb3-10"></a><span class="co">#&gt; $ nonbreeding_start_dt            &lt;date&gt; 2018-01-18, 2018-11-30, NA, 2018-12-28, 20…</span></span>
+<span id="cb3-11"><a href="access.html#cb3-11"></a><span class="co">#&gt; $ nonbreeding_end_dt              &lt;date&gt; 2018-03-01, 2018-02-15, NA, 2018-01-11, 20…</span></span>
+<span id="cb3-12"><a href="access.html#cb3-12"></a><span class="co">#&gt; $ postbreeding_migration_start_dt &lt;date&gt; 2018-08-10, 2018-08-24, NA, 2018-08-24, 20…</span></span>
+<span id="cb3-13"><a href="access.html#cb3-13"></a><span class="co">#&gt; $ postbreeding_migration_end_dt   &lt;date&gt; 2018-01-11, 2018-11-23, NA, 2018-12-21, 20…</span></span>
+<span id="cb3-14"><a href="access.html#cb3-14"></a><span class="co">#&gt; $ prebreeding_migration_start_dt  &lt;date&gt; 2018-03-08, 2018-02-22, NA, 2018-01-18, 20…</span></span>
+<span id="cb3-15"><a href="access.html#cb3-15"></a><span class="co">#&gt; $ prebreeding_migration_end_dt    &lt;date&gt; 2018-05-17, 2018-05-03, NA, 2018-05-31, 20…</span></span>
+<span id="cb3-16"><a href="access.html#cb3-16"></a><span class="co">#&gt; $ year_round_start_dt             &lt;date&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 2018-0…</span></span>
+<span id="cb3-17"><a href="access.html#cb3-17"></a><span class="co">#&gt; $ year_round_end_dt               &lt;date&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 2018-1…</span></span></code></pre></div>
 <p>If you’re working in RStudio, you can use <code>View()</code> to interactively explore this data frame. You can also consult the <a href="https://ebird.org/science/status-and-trends">Status and Trends</a> landing page to see the full list of species.</p>
 <p>These seasonal dates are defined through a process of expert review of the weekly Status and Trends maps and define the start and end weeks of each of the following seasons: breeding, non-breeding, pre-breeding migration, and post-breeding migration. If dates are missing for a given season, it means the species did not pass the review process for that season.</p>
 </div>
@@ -297,8 +304,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="single-species-multi-scale-site-selection.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -1,0 +1,175 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+# Single Species, Multi-Scale Site Selection
+
+## Objective {#objective}
+
+In this lesson, we'll learn how to use eBird Status & Trends data to identify important sites for Loggerhead Shrike during the breeding season at different spatial scales. This is an example of an analysis you might do to prioritize sites for a species, perhaps for conservation or management.
+
+## Introduction {#intro}
+
+In the previous lesson, we saw how to download [eBird Status and Trends](https://ebird.org/science/status-and-trends) data and load weekly estimates of relative abundance into R for further analysis. In this lesson, we'll demonstrate one possible use case for these data: identifying sites of high importance for a species of conservation concern. Let's start by loading the libraries we'll need for this analysis.
+
+```{r site-libraries}
+library(ebirdst)
+library(raster)
+library(sf)
+library(rnaturalearth)
+library(dplyr)
+library(ggplot2)
+```
+
+## Seasonal abundance data {#seasonal}
+
+For this site selection analysis we'll be interested in identifying important sites for Loggerhead Shrike during the **breeding** season. Recall from the previous lesson, that Status and Trends data are provided as weekly estimates and we can access predefined seasonal boundary dates from the `ebirdst_runs` data frame.
+
+```{r seasonal-runs}
+logshr_run <- filter(ebirdst_runs, common_name == "Loggerhead Shrike")
+start_dt <- logshr_run$breeding_start_dt
+end_dt <- logshr_run$breeding_end_dt
+c(start_dt, end_dt)
+```
+
+We could subset the weekly relative abundance `RasterStack` to just the breeding season weeks, then average across the weeks. However, as a shortcut, the `ebirdst` package provides pre-calculated seasonal raster layers, which we can access with `load_raster()`.
+
+```{r seasonal-load}
+# find the location of the data we downloaded in the previous lesson
+sp_path <- get_species_path("Loggerhead Shrike")
+# load the seasonal rasters
+abd <- load_raster("abundance_seasonal", sp_path)
+abd
+# subset to just the breeding season
+abd_breeding <- abd[["breeding"]]
+abd_breeding
+```
+
+This layer represents the expected relative abundance of Loggerhead Shrike during the breeding season on an eBird Traveling Count by a skilled eBirder starting at the optimal time of day with the optimal search duration and distance that maximizes detection of this species in a region.
+
+Let's crop and re-project based on the species specific map parameters.
+
+```{r seasonal-crop}
+# load mapping parameters
+map_pars <- ebirdst::load_fac_map_parameters(sp_path)
+
+# crop and reproject abundance raster
+abd_breeding_proj <- abd_breeding %>% 
+  crop(map_pars$fa_extent_sinu) %>% 
+  projectRaster(crs = map_pars$custom_projection)
+```
+
+## Range-wide site selection {#rangewide}
+
+To perform a range-wide site selection, we'll identify the locations with the top 5% of non-zero abundance values across the entire range and visualize those locations. Let's start by cleaning up this raster a little more by removing cells with zero abundance and further trimming the extent to just the area of non-zero breeding season abundance.
+
+```{r rangewide-nz}
+# remove zeroes prior to calculating quantiles
+abd_breeding_proj[abd_breeding_proj == 0] <- NA
+# trim 
+abd_nonzero <- trim(abd_breeding_proj)
+```
+
+New we can calculate the 95th quantile and use it to identify the top 5% of cells.
+
+```{r rangewide-quantile}
+# calculate the 95th quantile
+q95 <- quantile(abd_nonzero, na.rm = TRUE, probs = 0.95)
+# identify top 5% of cells
+abd_top5 <- abd_nonzero >= q95
+```
+
+Finally let's map these selected sites.
+
+```{r rangewide-map}
+par(mar = c(0, 0, 0, 0))
+plot(abd_top5, col = c('#d9d9d9', '#fd8d3c'), 
+     axes = FALSE, box = FALSE,
+     maxpixels = ncell(abd_top5))
+```
+
+## Local Selection {#local}
+
+If you intend to use these abundance rasters at a very local scale, it's important to be cautious because of the broad spatial scale at which the modeling was conducted. For example, let's consider just the data from Louisiana. To start, we'll get boundary data of Louisiana.
+
+```{r local-la}
+# get spatial boundary for louisiana, project lousiana to sinusoidal
+la <- ne_states(iso_a2 = "US", returnclass = "sf") %>% 
+  filter(name == "Louisiana") %>% 
+  st_transform(crs = st_crs(abd_breeding))
+```
+
+```{r}
+# load the upper and lower confidence intervals
+abd_upper <- load_raster("abundance_upper", path = sp_path)
+abd_lower <- load_raster("abundance_lower", path = sp_path)
+
+# subset to breeding season
+la_breeding_season <- ebirdst_extent(la, 
+                                     c(logshr_run$breeding_start_dt,
+                                       logshr_run$breeding_end_dt))
+abd_upper_br <- ebirdst_subset(abd_upper, la_breeding_season)
+abd_lower_br <- ebirdst_subset(abd_lower, la_breeding_season)
+
+# average for the breeding season
+abd_upper_br_avg <- calc(abd_upper_br, fun = mean, na.rm = TRUE)
+abd_lower_br_avg <- calc(abd_lower_br, fun = mean, na.rm = TRUE)
+
+# set some points in the northern part  of the state
+high_pt1 <- st_point(c(-92.1081, 32.2624)) %>% 
+  st_sfc(crs = 4326) %>% 
+  st_transform(crs = projection(abd_breeding))
+high_pt2 <- st_point(c(-92.0777, 32.2624)) %>% 
+  st_sfc(crs = 4326) %>% 
+  st_transform(crs = projection(abd_breeding))
+low_pt <- st_point(c(-92.1336, 32.2882)) %>% 
+  st_sfc(crs = 4326) %>% 
+  st_transform(crs = projection(abd_breeding))
+
+# combine points
+all_pts <- st_union(st_union(high_pt1, high_pt2), low_pt)
+
+# overview map
+all_pts_proj <- st_transform(all_pts, crs = st_crs(map_pars$custom_projection))
+plot(abd_breeding_proj, 
+     maxpixels = ncell(abd_breeding_proj), box = FALSE, 
+     #breaks = c(0, quarters, maxValue(abd_breeding_proj)), axes = FALSE, 
+     col = abundance_palette(4, season = "weekly"), 
+     ext = extent(as(st_buffer(all_pts_proj, 105000), 'Spatial')), alpha = 0.5)
+plot(st_geometry(la %>% st_transform(crs = map_pars$custom_projection)), add = TRUE)
+plot(all_pts_proj, add = TRUE, col = 'black', cex = 2, pch = 21, bg = 'red')
+
+# plot points on top of the individual raster cells
+plot(abd_breeding_proj, ext = extent(as(st_buffer(all_pts_proj, 10000), 'Spatial')), 
+     box = FALSE, col = abundance_palette(100, season = "weekly"), axes = FALSE)
+plot(all_pts_proj, add = TRUE, pch = 21, cex = 2.5, col = 'black', bg = 'red')
+
+# convert points to coordinates for extraction
+high_pt1 <- st_coordinates(high_pt1)
+high_pt2 <- st_coordinates(high_pt2)
+low_pt <- st_coordinates(low_pt)
+
+# extract
+abund_hpt1 <- extract(abd_breeding, high_pt1, method = 'simple')
+upper_hpt1 <- extract(abd_upper_br_avg, high_pt1, method = 'simple')
+lower_hpt1 <- extract(abd_lower_br_avg, high_pt1, method = 'simple')
+
+abund_hpt2 <- extract(abd_breeding, high_pt2, method = 'simple')
+upper_hpt2 <- extract(abd_upper_br_avg, high_pt2, method = 'simple')
+lower_hpt2 <- extract(abd_lower_br_avg, high_pt2, method = 'simple')
+
+abund_lpt1 <- extract(abd_breeding, low_pt, method = 'simple')
+upper_lpt1 <- extract(abd_upper_br_avg, low_pt, method = 'simple')
+lower_lpt1 <- extract(abd_lower_br_avg, low_pt, method = 'simple')
+
+# create data frame
+pts_df <- data.frame(middle = c(abund_hpt1, abund_hpt2, abund_lpt1),
+                     upper = c(upper_hpt1, upper_hpt2, upper_lpt1),
+                     lower = c(lower_hpt1, lower_hpt2, lower_lpt1),
+                     label = c("High Point 1", "High Point 2", "Lower Point"))
+
+# plot the confidence intervals for the three points
+p <- ggplot(pts_df, aes(y = middle, x = label))
+p + geom_point() + geom_errorbar(aes(ymax = upper, ymin = lower))
+```

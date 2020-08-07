@@ -15,7 +15,7 @@ In this lesson, we'll learn how to download eBird Status & Trends data using the
 
 Let's start by loading the `ebirdst` R package and some additional packages for working with the data.
 
-```{r libraries}
+```{r access-libraries}
 library(ebirdst)
 library(raster)
 library(dplyr)

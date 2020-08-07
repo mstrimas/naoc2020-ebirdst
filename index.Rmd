@@ -15,7 +15,7 @@ This workshop will introduce attendees to the modeled data products (weekly esti
 
 ## Setup
 
-The follow along with the code in the workshop you will need to install the following packages:
+To run the code in the workshop you'll need to install the following packages:
 
 ```{r eval=FALSE}
 install.packages(c("tidyverse", "raster", "sf", "ebirdst", "rnaturalearth"))
