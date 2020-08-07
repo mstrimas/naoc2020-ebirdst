@@ -152,12 +152,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.4" data-path="site-selection.html"><a href="site-selection.html#site-rangewide"><i class="fa fa-check"></i><b>2.4</b> Range-wide site selection</a></li>
 <li class="chapter" data-level="2.5" data-path="site-selection.html"><a href="site-selection.html#site-local"><i class="fa fa-check"></i><b>2.5</b> Local Selection</a><ul>
 <li class="chapter" data-level="2.5.1" data-path="site-selection.html"><a href="site-selection.html#site-local-uncertainty"><i class="fa fa-check"></i><b>2.5.1</b> Uncertainty analysis</a></li>
+<li class="chapter" data-level="2.5.2" data-path="site-selection.html"><a href="site-selection.html#ground-truth"><i class="fa fa-check"></i><b>2.5.2</b> Ground truth</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html"><i class="fa fa-check"></i><b>3</b> Multi-species Trajectories</a><ul>
 <li class="chapter" data-level="3.1" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-objective"><i class="fa fa-check"></i><b>3.1</b> Objective</a></li>
 <li class="chapter" data-level="3.2" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-intro"><i class="fa fa-check"></i><b>3.2</b> Introduction</a></li>
 <li class="chapter" data-level="3.3" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-data"><i class="fa fa-check"></i><b>3.3</b> Multi-species data</a></li>
+<li class="chapter" data-level="3.4" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-pop"><i class="fa fa-check"></i><b>3.4</b> Proportion of population</a></li>
+<li class="chapter" data-level="3.5" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-traj"><i class="fa fa-check"></i><b>3.5</b> Trajectories</a></li>
 </ul></li>
 </ul>
 
@@ -187,14 +190,63 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="multi-species-trajectories.html#cb26-1"></a><span class="kw">library</span>(ebirdst)</span>
 <span id="cb26-2"><a href="multi-species-trajectories.html#cb26-2"></a><span class="kw">library</span>(raster)</span>
 <span id="cb26-3"><a href="multi-species-trajectories.html#cb26-3"></a><span class="kw">library</span>(sf)</span>
-<span id="cb26-4"><a href="multi-species-trajectories.html#cb26-4"></a><span class="kw">library</span>(tidyverse)</span></code></pre></div>
+<span id="cb26-4"><a href="multi-species-trajectories.html#cb26-4"></a><span class="kw">library</span>(rnaturalearth)</span>
+<span id="cb26-5"><a href="multi-species-trajectories.html#cb26-5"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb26-6"><a href="multi-species-trajectories.html#cb26-6"></a><span class="kw">library</span>(parallel)</span>
+<span id="cb26-7"><a href="multi-species-trajectories.html#cb26-7"></a>extract &lt;-<span class="st"> </span>raster<span class="op">::</span>extract</span>
+<span id="cb26-8"><a href="multi-species-trajectories.html#cb26-8"></a></span>
+<span id="cb26-9"><a href="multi-species-trajectories.html#cb26-9"></a><span class="co"># kansas boundary</span></span>
+<span id="cb26-10"><a href="multi-species-trajectories.html#cb26-10"></a>ks &lt;-<span class="st"> </span><span class="kw">ne_states</span>(<span class="dt">iso_a2 =</span> <span class="st">&quot;US&quot;</span>, <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-11"><a href="multi-species-trajectories.html#cb26-11"></a><span class="st">  </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &quot;Kansas&quot;</span>)</span></code></pre></div>
 </div>
 <div id="traj-data" class="section level2">
 <h2><span class="header-section-number">3.3</span> Multi-species data</h2>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="multi-species-trajectories.html#cb27-1"></a>species &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Tree Swallow&quot;</span>, <span class="st">&quot;Northern Rough-winged Swallow&quot;</span>, </span>
-<span id="cb27-2"><a href="multi-species-trajectories.html#cb27-2"></a>             <span class="st">&quot;Barn Swallow&quot;</span>, <span class="st">&quot;Violet-green Swallow&quot;</span>, <span class="st">&quot;Cave Swallow&quot;</span>, </span>
-<span id="cb27-3"><a href="multi-species-trajectories.html#cb27-3"></a>             <span class="st">&quot;Chimney Swift&quot;</span>, <span class="st">&quot;Purple Martin&quot;</span>)</span>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="multi-species-trajectories.html#cb27-1"></a>species &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;American Avocet&quot;</span>, <span class="st">&quot;Snowy Plover&quot;</span>, <span class="st">&quot;Hudsonian Godwit&quot;</span>, </span>
+<span id="cb27-2"><a href="multi-species-trajectories.html#cb27-2"></a>             <span class="st">&quot;Willet&quot;</span>, <span class="st">&quot;Marbled Godwit&quot;</span>, <span class="st">&quot;Sanderling&quot;</span>, </span>
+<span id="cb27-3"><a href="multi-species-trajectories.html#cb27-3"></a>             <span class="st">&quot;Semipalmated Sandpiper&quot;</span>)</span>
 <span id="cb27-4"><a href="multi-species-trajectories.html#cb27-4"></a>sp_dirs &lt;-<span class="st"> </span><span class="kw">map_chr</span>(species, ebirdst_download)</span></code></pre></div>
+</div>
+<div id="traj-pop" class="section level2">
+<h2><span class="header-section-number">3.4</span> Proportion of population</h2>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="multi-species-trajectories.html#cb28-1"></a>calculate_trajectory &lt;-<span class="st"> </span><span class="cf">function</span>(x, common_name, region) {</span>
+<span id="cb28-2"><a href="multi-species-trajectories.html#cb28-2"></a>  <span class="kw">message</span>(<span class="kw">names</span>(x))</span>
+<span id="cb28-3"><a href="multi-species-trajectories.html#cb28-3"></a>  <span class="co"># load and project weekly abundance</span></span>
+<span id="cb28-4"><a href="multi-species-trajectories.html#cb28-4"></a>  abd &lt;-<span class="st"> </span><span class="kw">load_raster</span>(<span class="st">&quot;abundance&quot;</span>, <span class="dt">path =</span> x)</span>
+<span id="cb28-5"><a href="multi-species-trajectories.html#cb28-5"></a>  r &lt;-<span class="st"> </span><span class="kw">st_transform</span>(region, <span class="dt">crs =</span> <span class="kw">st_crs</span>(abd))</span>
+<span id="cb28-6"><a href="multi-species-trajectories.html#cb28-6"></a>  </span>
+<span id="cb28-7"><a href="multi-species-trajectories.html#cb28-7"></a>  <span class="co"># total abundance within region</span></span>
+<span id="cb28-8"><a href="multi-species-trajectories.html#cb28-8"></a>  abd_region &lt;-<span class="st"> </span>abd <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-9"><a href="multi-species-trajectories.html#cb28-9"></a><span class="st">    </span><span class="kw">crop</span>(r) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-10"><a href="multi-species-trajectories.html#cb28-10"></a><span class="st">    </span><span class="kw">extract</span>(r, <span class="dt">fun =</span> sum)</span>
+<span id="cb28-11"><a href="multi-species-trajectories.html#cb28-11"></a>  abd_region &lt;-<span class="st"> </span>abd_region[<span class="dv">1</span>, , drop =<span class="st"> </span><span class="ot">TRUE</span>]</span>
+<span id="cb28-12"><a href="multi-species-trajectories.html#cb28-12"></a>  </span>
+<span id="cb28-13"><a href="multi-species-trajectories.html#cb28-13"></a>  <span class="co"># calculate total range-wide abundance</span></span>
+<span id="cb28-14"><a href="multi-species-trajectories.html#cb28-14"></a>  abd_total &lt;-<span class="st"> </span><span class="kw">mclapply</span>(<span class="kw">seq.int</span>(<span class="kw">nlayers</span>(abd)),</span>
+<span id="cb28-15"><a href="multi-species-trajectories.html#cb28-15"></a>                        <span class="cf">function</span>(i) <span class="kw">cellStats</span>(abd[[i]], sum),</span>
+<span id="cb28-16"><a href="multi-species-trajectories.html#cb28-16"></a>                        <span class="dt">mc.preschedule =</span> <span class="ot">TRUE</span>, <span class="dt">mc.set.seed =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb28-17"><a href="multi-species-trajectories.html#cb28-17"></a>                        <span class="dt">mc.cores =</span> <span class="kw">detectCores</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-18"><a href="multi-species-trajectories.html#cb28-18"></a><span class="st">    </span><span class="kw">unlist</span>()</span>
+<span id="cb28-19"><a href="multi-species-trajectories.html#cb28-19"></a>  </span>
+<span id="cb28-20"><a href="multi-species-trajectories.html#cb28-20"></a>  <span class="kw">data.frame</span>(<span class="dt">common_name =</span> common_name,</span>
+<span id="cb28-21"><a href="multi-species-trajectories.html#cb28-21"></a>             <span class="dt">date =</span> <span class="kw">parse_raster_dates</span>(abd),</span>
+<span id="cb28-22"><a href="multi-species-trajectories.html#cb28-22"></a>             <span class="dt">prop_pop =</span> abd_region <span class="op">/</span><span class="st"> </span>abd_total,</span>
+<span id="cb28-23"><a href="multi-species-trajectories.html#cb28-23"></a>             <span class="dt">row.names =</span> <span class="ot">NULL</span>)</span>
+<span id="cb28-24"><a href="multi-species-trajectories.html#cb28-24"></a>}</span>
+<span id="cb28-25"><a href="multi-species-trajectories.html#cb28-25"></a>trajectories &lt;-<span class="st"> </span><span class="kw">map2_dfr</span>(sp_dirs, <span class="kw">names</span>(sp_dirs), </span>
+<span id="cb28-26"><a href="multi-species-trajectories.html#cb28-26"></a>                         calculate_trajectory,</span>
+<span id="cb28-27"><a href="multi-species-trajectories.html#cb28-27"></a>                         <span class="dt">region =</span> ks)</span>
+<span id="cb28-28"><a href="multi-species-trajectories.html#cb28-28"></a><span class="kw">write_csv</span>(trajectories,  <span class="st">&quot;data/shorebird_pop-trajectories.csv&quot;</span>)</span></code></pre></div>
+</div>
+<div id="traj-traj" class="section level2">
+<h2><span class="header-section-number">3.5</span> Trajectories</h2>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="multi-species-trajectories.html#cb29-1"></a><span class="kw">ggplot</span>(trajectories, <span class="kw">aes</span>(date, prop_pop, <span class="dt">color =</span> common_name)) <span class="op">+</span></span>
+<span id="cb29-2"><a href="multi-species-trajectories.html#cb29-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb29-3"><a href="multi-species-trajectories.html#cb29-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Week&quot;</span>, </span>
+<span id="cb29-4"><a href="multi-species-trajectories.html#cb29-4"></a>       <span class="dt">y =</span> <span class="st">&quot;Proportion of Population in Kansas&quot;</span>,</span>
+<span id="cb29-5"><a href="multi-species-trajectories.html#cb29-5"></a>       <span class="dt">color =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
+<span id="cb29-6"><a href="multi-species-trajectories.html#cb29-6"></a><span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set2&quot;</span>) <span class="op">+</span></span>
+<span id="cb29-7"><a href="multi-species-trajectories.html#cb29-7"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<p><img src="naoc2020-ebirdst_files/figure-html/traj-traj-1.png" width="\textwidth" style="display: block; margin: auto;" /></p>
 
 </div>
 </div>

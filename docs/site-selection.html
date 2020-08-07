@@ -152,12 +152,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.4" data-path="site-selection.html"><a href="site-selection.html#site-rangewide"><i class="fa fa-check"></i><b>2.4</b> Range-wide site selection</a></li>
 <li class="chapter" data-level="2.5" data-path="site-selection.html"><a href="site-selection.html#site-local"><i class="fa fa-check"></i><b>2.5</b> Local Selection</a><ul>
 <li class="chapter" data-level="2.5.1" data-path="site-selection.html"><a href="site-selection.html#site-local-uncertainty"><i class="fa fa-check"></i><b>2.5.1</b> Uncertainty analysis</a></li>
+<li class="chapter" data-level="2.5.2" data-path="site-selection.html"><a href="site-selection.html#ground-truth"><i class="fa fa-check"></i><b>2.5.2</b> Ground truth</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html"><i class="fa fa-check"></i><b>3</b> Multi-species Trajectories</a><ul>
 <li class="chapter" data-level="3.1" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-objective"><i class="fa fa-check"></i><b>3.1</b> Objective</a></li>
 <li class="chapter" data-level="3.2" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-intro"><i class="fa fa-check"></i><b>3.2</b> Introduction</a></li>
 <li class="chapter" data-level="3.3" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-data"><i class="fa fa-check"></i><b>3.3</b> Multi-species data</a></li>
+<li class="chapter" data-level="3.4" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-pop"><i class="fa fa-check"></i><b>3.4</b> Proportion of population</a></li>
+<li class="chapter" data-level="3.5" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-traj"><i class="fa fa-check"></i><b>3.5</b> Trajectories</a></li>
 </ul></li>
 </ul>
 
@@ -259,13 +262,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Let’s transition from broad-scale, region-wide site selection to a local site selection exercise. For example, let’s consider a land trust working in Louisiana trying to identify important sites for Loggerhead Shrike. To start, we’ll get a boundary polygon for Louisiana.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="site-selection.html#cb20-1"></a><span class="co"># get spatial boundary for louisiana</span></span>
 <span id="cb20-2"><a href="site-selection.html#cb20-2"></a>la &lt;-<span class="st"> </span><span class="kw">ne_states</span>(<span class="dt">iso_a2 =</span> <span class="st">&quot;US&quot;</span>, <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb20-3"><a href="site-selection.html#cb20-3"></a><span class="st">  </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &quot;Louisiana&quot;</span>)</span>
-<span id="cb20-4"><a href="site-selection.html#cb20-4"></a><span class="co"># project</span></span>
-<span id="cb20-5"><a href="site-selection.html#cb20-5"></a>la_proj &lt;-<span class="st"> </span><span class="kw">st_transform</span>(la, <span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection)</span>
-<span id="cb20-6"><a href="site-selection.html#cb20-6"></a>la_sinu &lt;-<span class="st"> </span><span class="kw">st_transform</span>(la, <span class="dt">crs =</span> <span class="kw">st_crs</span>(abd_breeding))</span></code></pre></div>
+<span id="cb20-3"><a href="site-selection.html#cb20-3"></a><span class="st">  </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &quot;Louisiana&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb20-4"><a href="site-selection.html#cb20-4"></a><span class="st">  </span><span class="co"># project</span></span>
+<span id="cb20-5"><a href="site-selection.html#cb20-5"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection)</span></code></pre></div>
 <p>We can identify the quartiles of the abundance data within Louisiana, essentially dividing the cells within the state into four equally sized groups.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="site-selection.html#cb21-1"></a><span class="co"># mask to louisiana</span></span>
-<span id="cb21-2"><a href="site-selection.html#cb21-2"></a>abd_breeding_la &lt;-<span class="st"> </span><span class="kw">mask</span>(abd_breeding_proj, la_proj) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-2"><a href="site-selection.html#cb21-2"></a>abd_breeding_la &lt;-<span class="st"> </span><span class="kw">mask</span>(abd_breeding_proj, la) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb21-3"><a href="site-selection.html#cb21-3"></a><span class="st">  </span><span class="kw">trim</span>()</span>
 <span id="cb21-4"><a href="site-selection.html#cb21-4"></a></span>
 <span id="cb21-5"><a href="site-selection.html#cb21-5"></a><span class="co"># calculate abundance quartiles</span></span>
@@ -328,6 +330,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb25-10"><a href="site-selection.html#cb25-10"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Location&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Relative Abundance&quot;</span>,</span>
 <span id="cb25-11"><a href="site-selection.html#cb25-11"></a>       <span class="dt">title =</span> <span class="st">&quot;Confidence intervals for locations&quot;</span>)</span></code></pre></div>
 <p><img src="naoc2020-ebirdst_files/figure-html/unnamed-chunk-5-1.png" width="\textwidth" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ground-truth" class="section level3">
+<h3><span class="header-section-number">2.5.2</span> Ground truth</h3>
+<p>One additional way to check the results of a site selection exercise is to ground truth the results using satellite imagery for the region in question.</p>
+<p><img src="img/logshr-satellite.png" width="\textwidth" style="display: block; margin: auto;" /></p>
 
 </div>
 </div>

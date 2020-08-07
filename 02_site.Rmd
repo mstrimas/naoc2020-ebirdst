@@ -97,17 +97,16 @@ Let's transition from broad-scale, region-wide site selection to a local site se
 ```{r local-la}
 # get spatial boundary for louisiana
 la <- ne_states(iso_a2 = "US", returnclass = "sf") %>% 
-  filter(name == "Louisiana")
-# project
-la_proj <- st_transform(la, crs = map_pars$custom_projection)
-la_sinu <- st_transform(la, crs = st_crs(abd_breeding))
+  filter(name == "Louisiana") %>% 
+  # project
+  st_transform(crs = map_pars$custom_projection)
 ```
 
 We can identify the quartiles of the abundance data within Louisiana, essentially dividing the cells within the state into four equally sized groups.
 
 ```{r local-quarters}
 # mask to louisiana
-abd_breeding_la <- mask(abd_breeding_proj, la_proj) %>% 
+abd_breeding_la <- mask(abd_breeding_proj, la) %>% 
   trim()
 
 # calculate abundance quartiles
@@ -185,3 +184,9 @@ ggplot(pts, aes(y = abd, x = name)) +
   labs(x = "Location", y = "Relative Abundance",
        title = "Confidence intervals for locations")
 ```
+
+### Ground truth
+
+One additional way to check the results of a site selection exercise is to ground truth the results using satellite imagery for the region in question.
+
+`r knitr::include_graphics("img/logshr-satellite.png")`

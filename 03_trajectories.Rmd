@@ -16,22 +16,79 @@ To prepare data for multiple species and look at them both spatially and tempora
 library(ebirdst)
 library(raster)
 library(sf)
+library(rnaturalearth)
 library(tidyverse)
+library(parallel)
+extract <- raster::extract
+
+# kansas boundary
+ks <- ne_states(iso_a2 = "US", returnclass = "sf") %>% 
+  filter(name == "Kansas")
 ```
 
 ## Multi-species data {#traj-data}
 
-```{r data-dl, eval=FALSE}
-species <- c("Tree Swallow", "Northern Rough-winged Swallow", 
-             "Barn Swallow", "Violet-green Swallow", "Cave Swallow", 
-             "Chimney Swift", "Purple Martin")
+```{r data-dl, eval = FALSE}
+species <- c("American Avocet", "Snowy Plover", "Hudsonian Godwit", 
+             "Willet", "Marbled Godwit", "Sanderling", 
+             "Semipalmated Sandpiper")
 sp_dirs <- map_chr(species, ebirdst_download)
 ```
 
 ```{r data-dirs, echo = FALSE}
-species <- c("Tree Swallow", "Northern Rough-winged Swallow", 
-             "Barn Swallow", "Violet-green Swallow", "Cave Swallow", 
-             "Chimney Swift", "Purple Martin")
-sp_dirs <- map_chr(species, get_species_path)
+species <- c("American Avocet", "Snowy Plover", "Hudsonian Godwit", 
+             "Willet", "Marbled Godwit", "Sanderling", 
+             "Semipalmated Sandpiper")
+sp_dirs <- map_chr(species, get_species_path) %>% 
+  setNames(species)
+```
+
+## Proportion of population {#traj-pop}
+
+```{r traj-pop-process, eval = FALSE}
+calculate_trajectory <- function(x, common_name, region) {
+  message(names(x))
+  # load and project weekly abundance
+  abd <- load_raster("abundance", path = x)
+  r <- st_transform(region, crs = st_crs(abd))
+  
+  # total abundance within region
+  abd_region <- abd %>% 
+    crop(r) %>% 
+    extract(r, fun = sum)
+  abd_region <- abd_region[1, , drop = TRUE]
+  
+  # calculate total range-wide abundance
+  abd_total <- mclapply(seq.int(nlayers(abd)),
+                        function(i) cellStats(abd[[i]], sum),
+                        mc.preschedule = TRUE, mc.set.seed = TRUE, 
+                        mc.cores = detectCores()) %>% 
+    unlist()
+  
+  data.frame(common_name = common_name,
+             date = parse_raster_dates(abd),
+             prop_pop = abd_region / abd_total,
+             row.names = NULL)
+}
+trajectories <- map2_dfr(sp_dirs, names(sp_dirs), 
+                         calculate_trajectory,
+                         region = ks)
+write_csv(trajectories,  "data/shorebird_pop-trajectories.csv")
+```
+
+```{r traj-pop-load, echo = FALSE}
+trajectories <- read_csv("data/shorebird_pop-trajectories.csv")
+```
+
+## Trajectories {#traj-traj}
+
+```{r traj-traj}
+ggplot(trajectories, aes(date, prop_pop, color = common_name)) +
+  geom_line() +
+  labs(x = "Week", 
+       y = "Proportion of Population in Kansas",
+       color = NULL) +
+  scale_color_brewer(palette = "Set2") +
+  theme(legend.position = "bottom")
 ```
 
