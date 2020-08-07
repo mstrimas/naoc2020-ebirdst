@@ -8,7 +8,7 @@ editor_options:
 
 ## Objective {#site-objective}
 
-In this lesson, we'll learn how to use eBird Status & Trends data to identify important sites for Loggerhead Shrike during the breeding season at different spatial scales. This is an example of an analysis you might do to prioritize sites for a species, perhaps for conservation or management.
+To use eBird Status & Trends data to identify important sites for Loggerhead Shrike during the breeding season at different spatial scales. This is an example of an analysis you might do to prioritize sites for a species, perhaps for conservation or management.
 
 ## Introduction {#site-intro}
 

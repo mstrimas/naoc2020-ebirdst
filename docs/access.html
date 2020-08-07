@@ -183,7 +183,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Chapter 1</span> Data Access</h1>
 <div id="objective" class="section level2">
 <h2><span class="header-section-number">1.1</span> Objective</h2>
-<p>In this lesson, we’ll learn how to download eBird Status &amp; Trends data using the R package <a href="https://cornelllabofornithology.github.io/ebirdst/"><code>ebirdst</code></a>, load them into R and make a simple map.</p>
+<p>To download eBird Status &amp; Trends data using the R package <a href="https://cornelllabofornithology.github.io/ebirdst/"><code>ebirdst</code></a>, load those data into R and make a simple map.</p>
 </div>
 <div id="intro" class="section level2">
 <h2><span class="header-section-number">1.2</span> Introduction</h2>
@@ -199,20 +199,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="access.html#cb3-1"></a><span class="kw">glimpse</span>(ebirdst_runs)</span>
 <span id="cb3-2"><a href="access.html#cb3-2"></a><span class="co">#&gt; Rows: 610</span></span>
 <span id="cb3-3"><a href="access.html#cb3-3"></a><span class="co">#&gt; Columns: 14</span></span>
-<span id="cb3-4"><a href="access.html#cb3-4"></a><span class="co">#&gt; $ species_code                    [3m[90m&lt;chr&gt;[39m[23m &quot;bbwduc&quot;, &quot;fuwduc&quot;, &quot;empgoo&quot;, &quot;snogoo&quot;, &quot;ro…</span></span>
-<span id="cb3-5"><a href="access.html#cb3-5"></a><span class="co">#&gt; $ run_name                        [3m[90m&lt;chr&gt;[39m[23m &quot;bbwduc-ERD2018-EBIRD_SCIENCE-20191105-dc39…</span></span>
-<span id="cb3-6"><a href="access.html#cb3-6"></a><span class="co">#&gt; $ scientific_name                 [3m[90m&lt;chr&gt;[39m[23m &quot;Dendrocygna autumnalis&quot;, &quot;Dendrocygna bico…</span></span>
-<span id="cb3-7"><a href="access.html#cb3-7"></a><span class="co">#&gt; $ common_name                     [3m[90m&lt;chr&gt;[39m[23m &quot;Black-bellied Whistling-Duck&quot;, &quot;Fulvous Wh…</span></span>
-<span id="cb3-8"><a href="access.html#cb3-8"></a><span class="co">#&gt; $ breeding_start_dt               [3m[90m&lt;date&gt;[39m[23m 2018-05-24, 2018-05-10, 2018-05-24, 2018-0…</span></span>
-<span id="cb3-9"><a href="access.html#cb3-9"></a><span class="co">#&gt; $ breeding_end_dt                 [3m[90m&lt;date&gt;[39m[23m 2018-08-03, 2018-08-17, 2018-06-21, 2018-0…</span></span>
-<span id="cb3-10"><a href="access.html#cb3-10"></a><span class="co">#&gt; $ nonbreeding_start_dt            [3m[90m&lt;date&gt;[39m[23m 2018-01-18, 2018-11-30, NA, 2018-12-28, 20…</span></span>
-<span id="cb3-11"><a href="access.html#cb3-11"></a><span class="co">#&gt; $ nonbreeding_end_dt              [3m[90m&lt;date&gt;[39m[23m 2018-03-01, 2018-02-15, NA, 2018-01-11, 20…</span></span>
-<span id="cb3-12"><a href="access.html#cb3-12"></a><span class="co">#&gt; $ postbreeding_migration_start_dt [3m[90m&lt;date&gt;[39m[23m 2018-08-10, 2018-08-24, NA, 2018-08-24, 20…</span></span>
-<span id="cb3-13"><a href="access.html#cb3-13"></a><span class="co">#&gt; $ postbreeding_migration_end_dt   [3m[90m&lt;date&gt;[39m[23m 2018-01-11, 2018-11-23, NA, 2018-12-21, 20…</span></span>
-<span id="cb3-14"><a href="access.html#cb3-14"></a><span class="co">#&gt; $ prebreeding_migration_start_dt  [3m[90m&lt;date&gt;[39m[23m 2018-03-08, 2018-02-22, NA, 2018-01-18, 20…</span></span>
-<span id="cb3-15"><a href="access.html#cb3-15"></a><span class="co">#&gt; $ prebreeding_migration_end_dt    [3m[90m&lt;date&gt;[39m[23m 2018-05-17, 2018-05-03, NA, 2018-05-31, 20…</span></span>
-<span id="cb3-16"><a href="access.html#cb3-16"></a><span class="co">#&gt; $ year_round_start_dt             [3m[90m&lt;date&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, 2018-0…</span></span>
-<span id="cb3-17"><a href="access.html#cb3-17"></a><span class="co">#&gt; $ year_round_end_dt               [3m[90m&lt;date&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, 2018-1…</span></span></code></pre></div>
+<span id="cb3-4"><a href="access.html#cb3-4"></a><span class="co">#&gt; $ species_code                    &lt;chr&gt; &quot;bbwduc&quot;, &quot;fuwduc&quot;, &quot;empgoo&quot;, &quot;snogoo&quot;, &quot;ro…</span></span>
+<span id="cb3-5"><a href="access.html#cb3-5"></a><span class="co">#&gt; $ run_name                        &lt;chr&gt; &quot;bbwduc-ERD2018-EBIRD_SCIENCE-20191105-dc39…</span></span>
+<span id="cb3-6"><a href="access.html#cb3-6"></a><span class="co">#&gt; $ scientific_name                 &lt;chr&gt; &quot;Dendrocygna autumnalis&quot;, &quot;Dendrocygna bico…</span></span>
+<span id="cb3-7"><a href="access.html#cb3-7"></a><span class="co">#&gt; $ common_name                     &lt;chr&gt; &quot;Black-bellied Whistling-Duck&quot;, &quot;Fulvous Wh…</span></span>
+<span id="cb3-8"><a href="access.html#cb3-8"></a><span class="co">#&gt; $ breeding_start_dt               &lt;date&gt; 2018-05-24, 2018-05-10, 2018-05-24, 2018-0…</span></span>
+<span id="cb3-9"><a href="access.html#cb3-9"></a><span class="co">#&gt; $ breeding_end_dt                 &lt;date&gt; 2018-08-03, 2018-08-17, 2018-06-21, 2018-0…</span></span>
+<span id="cb3-10"><a href="access.html#cb3-10"></a><span class="co">#&gt; $ nonbreeding_start_dt            &lt;date&gt; 2018-01-18, 2018-11-30, NA, 2018-12-28, 20…</span></span>
+<span id="cb3-11"><a href="access.html#cb3-11"></a><span class="co">#&gt; $ nonbreeding_end_dt              &lt;date&gt; 2018-03-01, 2018-02-15, NA, 2018-01-11, 20…</span></span>
+<span id="cb3-12"><a href="access.html#cb3-12"></a><span class="co">#&gt; $ postbreeding_migration_start_dt &lt;date&gt; 2018-08-10, 2018-08-24, NA, 2018-08-24, 20…</span></span>
+<span id="cb3-13"><a href="access.html#cb3-13"></a><span class="co">#&gt; $ postbreeding_migration_end_dt   &lt;date&gt; 2018-01-11, 2018-11-23, NA, 2018-12-21, 20…</span></span>
+<span id="cb3-14"><a href="access.html#cb3-14"></a><span class="co">#&gt; $ prebreeding_migration_start_dt  &lt;date&gt; 2018-03-08, 2018-02-22, NA, 2018-01-18, 20…</span></span>
+<span id="cb3-15"><a href="access.html#cb3-15"></a><span class="co">#&gt; $ prebreeding_migration_end_dt    &lt;date&gt; 2018-05-17, 2018-05-03, NA, 2018-05-31, 20…</span></span>
+<span id="cb3-16"><a href="access.html#cb3-16"></a><span class="co">#&gt; $ year_round_start_dt             &lt;date&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 2018-0…</span></span>
+<span id="cb3-17"><a href="access.html#cb3-17"></a><span class="co">#&gt; $ year_round_end_dt               &lt;date&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 2018-1…</span></span></code></pre></div>
 <p>If you’re working in RStudio, you can use <code>View()</code> to interactively explore this data frame. You can also consult the <a href="https://ebird.org/science/status-and-trends">Status and Trends</a> landing page to see the full list of species.</p>
 <p>These seasonal dates are defined through a process of expert review of the weekly Status and Trends maps and define the start and end weeks of each of the following seasons: breeding, non-breeding, pre-breeding migration, and post-breeding migration. If dates are missing for a given season, it means the species did not pass the review process for that season.</p>
 </div>

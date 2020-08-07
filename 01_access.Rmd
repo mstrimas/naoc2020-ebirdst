@@ -7,7 +7,7 @@ editor_options:
 
 ## Objective {#objective}
 
-In this lesson, we'll learn how to download eBird Status & Trends data using the R package [`ebirdst`](https://cornelllabofornithology.github.io/ebirdst/), load them into R and make a simple map.
+To download eBird Status & Trends data using the R package [`ebirdst`](https://cornelllabofornithology.github.io/ebirdst/), load those data into R and make a simple map.
 
 ## Introduction {#intro}
 

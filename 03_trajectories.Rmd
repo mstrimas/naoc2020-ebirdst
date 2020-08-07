@@ -8,9 +8,13 @@ editor_options:
 
 ## Objective {#traj-objective}
 
-To prepare data for multiple species and look at them both spatially and temporally, as species richness and proportion of population. This is an example of something you might do when prioritizing or targeting conservation and management of species groups.
+To prepare data for comparing Status and Trends data across multiple species. We'll compute proportion of population trajectories for a suite of species.
 
 ## Introduction {#traj-intro}
+
+Comparing Status and Trends results between species requires extra caution because the models give _relative_ rather than absolute abundance. Therefore the raw data cannot be directly compared between species because, for example, species differ in their detectability. To address this, we'll convert relative abundance to proportion of population for each species by dividing by the total abundance summed across the entire range. In addition, in this lesson we'll look at the temporal dimension of these data, plotting trajectories through time for a given region.
+
+Let's start by loading the necessary packages for this lesson.
 
 ```{r traj-libraries}
 library(ebirdst)
@@ -20,13 +24,19 @@ library(rnaturalearth)
 library(tidyverse)
 library(parallel)
 extract <- raster::extract
+```
 
-# kansas boundary
+For this example, we'll be looking at a suite of shorebird species in Kansas, so let's also get a boundary polygon for that state.
+
+```{r traj-boundary}
 ks <- ne_states(iso_a2 = "US", returnclass = "sf") %>% 
   filter(name == "Kansas")
 ```
 
+
 ## Multi-species data {#traj-data}
+
+We begin by downloading data for a suite of 7 shorebird species that all spend at least a portion of the year within Kansas.
 
 ```{r data-dl, eval = FALSE}
 species <- c("American Avocet", "Snowy Plover", "Hudsonian Godwit", 
@@ -44,6 +54,14 @@ sp_dirs <- map_chr(species, get_species_path) %>%
 ```
 
 ## Proportion of population {#traj-pop}
+
+Our goal is to produce trajectories comparing the proportion of each species' population within Kansas. For each species we need to:
+
+1. Calculate the sum of the abundance within Kansas for each week
+2. Calculate the sum of the abundance across the entire range of the species for each week
+3. Calculate the proportion of the population as the ratio of the within Kansas abundance to the total abundance
+
+The below function performs these steps for a given species. Iterating over the full set of species is fairly computationally intensive, taking about 30 minutes on a modern laptop.
 
 ```{r traj-pop-process, eval = FALSE}
 calculate_trajectory <- function(x, common_name, region) {
@@ -82,13 +100,14 @@ trajectories <- read_csv("data/shorebird_pop-trajectories.csv")
 
 ## Trajectories {#traj-traj}
 
+Now we can plot these trajectories for the set of shorebird species.
+
 ```{r traj-traj}
 ggplot(trajectories, aes(date, prop_pop, color = common_name)) +
   geom_line() +
   labs(x = "Week", 
        y = "Proportion of Population in Kansas",
        color = NULL) +
-  scale_color_brewer(palette = "Set2") +
   theme(legend.position = "bottom")
 ```
 
