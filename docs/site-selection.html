@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="access.html"/>
-
+<link rel="next" href="multi-species-trajectories.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -146,11 +146,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.6" data-path="access.html"><a href="access.html#map"><i class="fa fa-check"></i><b>1.6</b> Mapping</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="site-selection.html"><a href="site-selection.html"><i class="fa fa-check"></i><b>2</b> Site Selection</a><ul>
-<li class="chapter" data-level="2.1" data-path="access.html"><a href="access.html#objective"><i class="fa fa-check"></i><b>2.1</b> Objective</a></li>
-<li class="chapter" data-level="2.2" data-path="access.html"><a href="access.html#intro"><i class="fa fa-check"></i><b>2.2</b> Introduction</a></li>
-<li class="chapter" data-level="2.3" data-path="site-selection.html"><a href="site-selection.html#seasonal"><i class="fa fa-check"></i><b>2.3</b> Seasonal abundance data</a></li>
-<li class="chapter" data-level="2.4" data-path="site-selection.html"><a href="site-selection.html#rangewide"><i class="fa fa-check"></i><b>2.4</b> Range-wide site selection</a></li>
-<li class="chapter" data-level="2.5" data-path="site-selection.html"><a href="site-selection.html#local"><i class="fa fa-check"></i><b>2.5</b> Local Selection</a></li>
+<li class="chapter" data-level="2.1" data-path="site-selection.html"><a href="site-selection.html#site-objective"><i class="fa fa-check"></i><b>2.1</b> Objective</a></li>
+<li class="chapter" data-level="2.2" data-path="site-selection.html"><a href="site-selection.html#site-intro"><i class="fa fa-check"></i><b>2.2</b> Introduction</a></li>
+<li class="chapter" data-level="2.3" data-path="site-selection.html"><a href="site-selection.html#site-seasonal"><i class="fa fa-check"></i><b>2.3</b> Seasonal abundance data</a></li>
+<li class="chapter" data-level="2.4" data-path="site-selection.html"><a href="site-selection.html#site-rangewide"><i class="fa fa-check"></i><b>2.4</b> Range-wide site selection</a></li>
+<li class="chapter" data-level="2.5" data-path="site-selection.html"><a href="site-selection.html#site-local"><i class="fa fa-check"></i><b>2.5</b> Local Selection</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="site-selection.html"><a href="site-selection.html#site-local-uncertainty"><i class="fa fa-check"></i><b>2.5.1</b> Uncertainty analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html"><i class="fa fa-check"></i><b>3</b> Multi-species Trajectories</a><ul>
+<li class="chapter" data-level="3.1" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-objective"><i class="fa fa-check"></i><b>3.1</b> Objective</a></li>
+<li class="chapter" data-level="3.2" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-intro"><i class="fa fa-check"></i><b>3.2</b> Introduction</a></li>
+<li class="chapter" data-level="3.3" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-data"><i class="fa fa-check"></i><b>3.3</b> Multi-species data</a></li>
 </ul></li>
 </ul>
 
@@ -171,11 +178,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="site-selection" class="section level1">
 <h1><span class="header-section-number">Chapter 2</span> Site Selection</h1>
-<div id="objective" class="section level2">
+<div id="site-objective" class="section level2">
 <h2><span class="header-section-number">2.1</span> Objective</h2>
 <p>In this lesson, we’ll learn how to use eBird Status &amp; Trends data to identify important sites for Loggerhead Shrike during the breeding season at different spatial scales. This is an example of an analysis you might do to prioritize sites for a species, perhaps for conservation or management.</p>
 </div>
-<div id="intro" class="section level2">
+<div id="site-intro" class="section level2">
 <h2><span class="header-section-number">2.2</span> Introduction</h2>
 <p>In the previous lesson, we saw how to download <a href="https://ebird.org/science/status-and-trends">eBird Status and Trends</a> data and load weekly estimates of relative abundance into R for further analysis. In this lesson, we’ll demonstrate one possible use case for these data: identifying sites of high importance for a species of conservation concern. Let’s start by loading the libraries we’ll need for this analysis.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="site-selection.html#cb13-1"></a><span class="kw">library</span>(ebirdst)</span>
@@ -185,7 +192,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-5"><a href="site-selection.html#cb13-5"></a><span class="kw">library</span>(dplyr)</span>
 <span id="cb13-6"><a href="site-selection.html#cb13-6"></a><span class="kw">library</span>(ggplot2)</span></code></pre></div>
 </div>
-<div id="seasonal" class="section level2">
+<div id="site-seasonal" class="section level2">
 <h2><span class="header-section-number">2.3</span> Seasonal abundance data</h2>
 <p>For this site selection analysis we’ll be interested in identifying important sites for Loggerhead Shrike during the <strong>breeding</strong> season. Recall from the previous lesson, that Status and Trends data are provided as weekly estimates and we can access predefined seasonal boundary dates from the <code>ebirdst_runs</code> data frame.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="site-selection.html#cb14-1"></a>logshr_run &lt;-<span class="st"> </span><span class="kw">filter</span>(ebirdst_runs, common_name <span class="op">==</span><span class="st"> &quot;Loggerhead Shrike&quot;</span>)</span>
@@ -226,9 +233,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb16-4"><a href="site-selection.html#cb16-4"></a><span class="co"># crop and reproject abundance raster</span></span>
 <span id="cb16-5"><a href="site-selection.html#cb16-5"></a>abd_breeding_proj &lt;-<span class="st"> </span>abd_breeding <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb16-6"><a href="site-selection.html#cb16-6"></a><span class="st">  </span><span class="kw">crop</span>(map_pars<span class="op">$</span>fa_extent_sinu) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb16-7"><a href="site-selection.html#cb16-7"></a><span class="st">  </span><span class="kw">projectRaster</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection)</span></code></pre></div>
+<span id="cb16-7"><a href="site-selection.html#cb16-7"></a><span class="st">  </span><span class="kw">projectRaster</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection, <span class="dt">method =</span> <span class="st">&quot;ngb&quot;</span>)</span></code></pre></div>
 </div>
-<div id="rangewide" class="section level2">
+<div id="site-rangewide" class="section level2">
 <h2><span class="header-section-number">2.4</span> Range-wide site selection</h2>
 <p>To perform a range-wide site selection, we’ll identify the locations with the top 5% of non-zero abundance values across the entire range and visualize those locations. Let’s start by cleaning up this raster a little more by removing cells with zero abundance and further trimming the extent to just the area of non-zero breeding season abundance.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="site-selection.html#cb17-1"></a><span class="co"># remove zeroes prior to calculating quantiles</span></span>
@@ -247,86 +254,82 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb19-4"><a href="site-selection.html#cb19-4"></a>     <span class="dt">maxpixels =</span> <span class="kw">ncell</span>(abd_top5))</span></code></pre></div>
 <p><img src="naoc2020-ebirdst_files/figure-html/rangewide-map-1.png" width="\textwidth" style="display: block; margin: auto;" /></p>
 </div>
-<div id="local" class="section level2">
+<div id="site-local" class="section level2">
 <h2><span class="header-section-number">2.5</span> Local Selection</h2>
-<p>If you intend to use these abundance rasters at a very local scale, it’s important to be cautious because of the broad spatial scale at which the modeling was conducted. For example, let’s consider just the data from Louisiana. To start, we’ll get boundary data of Louisiana.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="site-selection.html#cb20-1"></a><span class="co"># get spatial boundary for louisiana, project lousiana to sinusoidal</span></span>
+<p>Let’s transition from broad-scale, region-wide site selection to a local site selection exercise. For example, let’s consider a land trust working in Louisiana trying to identify important sites for Loggerhead Shrike. To start, we’ll get a boundary polygon for Louisiana.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="site-selection.html#cb20-1"></a><span class="co"># get spatial boundary for louisiana</span></span>
 <span id="cb20-2"><a href="site-selection.html#cb20-2"></a>la &lt;-<span class="st"> </span><span class="kw">ne_states</span>(<span class="dt">iso_a2 =</span> <span class="st">&quot;US&quot;</span>, <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb20-3"><a href="site-selection.html#cb20-3"></a><span class="st">  </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &quot;Louisiana&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb20-4"><a href="site-selection.html#cb20-4"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> <span class="kw">st_crs</span>(abd_breeding))</span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="site-selection.html#cb21-1"></a><span class="co"># load the upper and lower confidence intervals</span></span>
-<span id="cb21-2"><a href="site-selection.html#cb21-2"></a>abd_upper &lt;-<span class="st"> </span><span class="kw">load_raster</span>(<span class="st">&quot;abundance_upper&quot;</span>, <span class="dt">path =</span> sp_path)</span>
-<span id="cb21-3"><a href="site-selection.html#cb21-3"></a>abd_lower &lt;-<span class="st"> </span><span class="kw">load_raster</span>(<span class="st">&quot;abundance_lower&quot;</span>, <span class="dt">path =</span> sp_path)</span>
+<span id="cb20-3"><a href="site-selection.html#cb20-3"></a><span class="st">  </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &quot;Louisiana&quot;</span>)</span>
+<span id="cb20-4"><a href="site-selection.html#cb20-4"></a><span class="co"># project</span></span>
+<span id="cb20-5"><a href="site-selection.html#cb20-5"></a>la_proj &lt;-<span class="st"> </span><span class="kw">st_transform</span>(la, <span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection)</span>
+<span id="cb20-6"><a href="site-selection.html#cb20-6"></a>la_sinu &lt;-<span class="st"> </span><span class="kw">st_transform</span>(la, <span class="dt">crs =</span> <span class="kw">st_crs</span>(abd_breeding))</span></code></pre></div>
+<p>We can identify the quartiles of the abundance data within Louisiana, essentially dividing the cells within the state into four equally sized groups.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="site-selection.html#cb21-1"></a><span class="co"># mask to louisiana</span></span>
+<span id="cb21-2"><a href="site-selection.html#cb21-2"></a>abd_breeding_la &lt;-<span class="st"> </span><span class="kw">mask</span>(abd_breeding_proj, la_proj) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-3"><a href="site-selection.html#cb21-3"></a><span class="st">  </span><span class="kw">trim</span>()</span>
 <span id="cb21-4"><a href="site-selection.html#cb21-4"></a></span>
-<span id="cb21-5"><a href="site-selection.html#cb21-5"></a><span class="co"># subset to breeding season</span></span>
-<span id="cb21-6"><a href="site-selection.html#cb21-6"></a>la_breeding_season &lt;-<span class="st"> </span><span class="kw">ebirdst_extent</span>(la, </span>
-<span id="cb21-7"><a href="site-selection.html#cb21-7"></a>                                     <span class="kw">c</span>(logshr_run<span class="op">$</span>breeding_start_dt,</span>
-<span id="cb21-8"><a href="site-selection.html#cb21-8"></a>                                       logshr_run<span class="op">$</span>breeding_end_dt))</span>
-<span id="cb21-9"><a href="site-selection.html#cb21-9"></a>abd_upper_br &lt;-<span class="st"> </span><span class="kw">ebirdst_subset</span>(abd_upper, la_breeding_season)</span>
-<span id="cb21-10"><a href="site-selection.html#cb21-10"></a>abd_lower_br &lt;-<span class="st"> </span><span class="kw">ebirdst_subset</span>(abd_lower, la_breeding_season)</span>
-<span id="cb21-11"><a href="site-selection.html#cb21-11"></a></span>
-<span id="cb21-12"><a href="site-selection.html#cb21-12"></a><span class="co"># average for the breeding season</span></span>
-<span id="cb21-13"><a href="site-selection.html#cb21-13"></a>abd_upper_br_avg &lt;-<span class="st"> </span><span class="kw">calc</span>(abd_upper_br, <span class="dt">fun =</span> mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb21-14"><a href="site-selection.html#cb21-14"></a>abd_lower_br_avg &lt;-<span class="st"> </span><span class="kw">calc</span>(abd_lower_br, <span class="dt">fun =</span> mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb21-15"><a href="site-selection.html#cb21-15"></a></span>
-<span id="cb21-16"><a href="site-selection.html#cb21-16"></a><span class="co"># set some points in the northern part  of the state</span></span>
-<span id="cb21-17"><a href="site-selection.html#cb21-17"></a>high_pt1 &lt;-<span class="st"> </span><span class="kw">st_point</span>(<span class="kw">c</span>(<span class="op">-</span><span class="fl">92.1081</span>, <span class="fl">32.2624</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-18"><a href="site-selection.html#cb21-18"></a><span class="st">  </span><span class="kw">st_sfc</span>(<span class="dt">crs =</span> <span class="dv">4326</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-19"><a href="site-selection.html#cb21-19"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> <span class="kw">projection</span>(abd_breeding))</span>
-<span id="cb21-20"><a href="site-selection.html#cb21-20"></a>high_pt2 &lt;-<span class="st"> </span><span class="kw">st_point</span>(<span class="kw">c</span>(<span class="op">-</span><span class="fl">92.0777</span>, <span class="fl">32.2624</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-21"><a href="site-selection.html#cb21-21"></a><span class="st">  </span><span class="kw">st_sfc</span>(<span class="dt">crs =</span> <span class="dv">4326</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-22"><a href="site-selection.html#cb21-22"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> <span class="kw">projection</span>(abd_breeding))</span>
-<span id="cb21-23"><a href="site-selection.html#cb21-23"></a>low_pt &lt;-<span class="st"> </span><span class="kw">st_point</span>(<span class="kw">c</span>(<span class="op">-</span><span class="fl">92.1336</span>, <span class="fl">32.2882</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-24"><a href="site-selection.html#cb21-24"></a><span class="st">  </span><span class="kw">st_sfc</span>(<span class="dt">crs =</span> <span class="dv">4326</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-25"><a href="site-selection.html#cb21-25"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> <span class="kw">projection</span>(abd_breeding))</span>
-<span id="cb21-26"><a href="site-selection.html#cb21-26"></a></span>
-<span id="cb21-27"><a href="site-selection.html#cb21-27"></a><span class="co"># combine points</span></span>
-<span id="cb21-28"><a href="site-selection.html#cb21-28"></a>all_pts &lt;-<span class="st"> </span><span class="kw">st_union</span>(<span class="kw">st_union</span>(high_pt1, high_pt2), low_pt)</span>
-<span id="cb21-29"><a href="site-selection.html#cb21-29"></a></span>
-<span id="cb21-30"><a href="site-selection.html#cb21-30"></a><span class="co"># overview map</span></span>
-<span id="cb21-31"><a href="site-selection.html#cb21-31"></a>all_pts_proj &lt;-<span class="st"> </span><span class="kw">st_transform</span>(all_pts, <span class="dt">crs =</span> <span class="kw">st_crs</span>(map_pars<span class="op">$</span>custom_projection))</span>
-<span id="cb21-32"><a href="site-selection.html#cb21-32"></a><span class="kw">plot</span>(abd_breeding_proj, </span>
-<span id="cb21-33"><a href="site-selection.html#cb21-33"></a>     <span class="dt">maxpixels =</span> <span class="kw">ncell</span>(abd_breeding_proj), <span class="dt">box =</span> <span class="ot">FALSE</span>, </span>
-<span id="cb21-34"><a href="site-selection.html#cb21-34"></a>     <span class="co">#breaks = c(0, quarters, maxValue(abd_breeding_proj)), axes = FALSE, </span></span>
-<span id="cb21-35"><a href="site-selection.html#cb21-35"></a>     <span class="dt">col =</span> <span class="kw">abundance_palette</span>(<span class="dv">4</span>, <span class="dt">season =</span> <span class="st">&quot;weekly&quot;</span>), </span>
-<span id="cb21-36"><a href="site-selection.html#cb21-36"></a>     <span class="dt">ext =</span> <span class="kw">extent</span>(<span class="kw">as</span>(<span class="kw">st_buffer</span>(all_pts_proj, <span class="dv">105000</span>), <span class="st">&#39;Spatial&#39;</span>)), <span class="dt">alpha =</span> <span class="fl">0.5</span>)</span>
-<span id="cb21-37"><a href="site-selection.html#cb21-37"></a><span class="kw">plot</span>(<span class="kw">st_geometry</span>(la <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection)), <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb21-38"><a href="site-selection.html#cb21-38"></a><span class="kw">plot</span>(all_pts_proj, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">cex =</span> <span class="dv">2</span>, <span class="dt">pch =</span> <span class="dv">21</span>, <span class="dt">bg =</span> <span class="st">&#39;red&#39;</span>)</span>
-<span id="cb21-39"><a href="site-selection.html#cb21-39"></a></span>
-<span id="cb21-40"><a href="site-selection.html#cb21-40"></a><span class="co"># plot points on top of the individual raster cells</span></span>
-<span id="cb21-41"><a href="site-selection.html#cb21-41"></a><span class="kw">plot</span>(abd_breeding_proj, <span class="dt">ext =</span> <span class="kw">extent</span>(<span class="kw">as</span>(<span class="kw">st_buffer</span>(all_pts_proj, <span class="dv">10000</span>), <span class="st">&#39;Spatial&#39;</span>)), </span>
-<span id="cb21-42"><a href="site-selection.html#cb21-42"></a>     <span class="dt">box =</span> <span class="ot">FALSE</span>, <span class="dt">col =</span> <span class="kw">abundance_palette</span>(<span class="dv">100</span>, <span class="dt">season =</span> <span class="st">&quot;weekly&quot;</span>), <span class="dt">axes =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb21-43"><a href="site-selection.html#cb21-43"></a><span class="kw">plot</span>(all_pts_proj, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">pch =</span> <span class="dv">21</span>, <span class="dt">cex =</span> <span class="fl">2.5</span>, <span class="dt">col =</span> <span class="st">&#39;black&#39;</span>, <span class="dt">bg =</span> <span class="st">&#39;red&#39;</span>)</span>
-<span id="cb21-44"><a href="site-selection.html#cb21-44"></a></span>
-<span id="cb21-45"><a href="site-selection.html#cb21-45"></a><span class="co"># convert points to coordinates for extraction</span></span>
-<span id="cb21-46"><a href="site-selection.html#cb21-46"></a>high_pt1 &lt;-<span class="st"> </span><span class="kw">st_coordinates</span>(high_pt1)</span>
-<span id="cb21-47"><a href="site-selection.html#cb21-47"></a>high_pt2 &lt;-<span class="st"> </span><span class="kw">st_coordinates</span>(high_pt2)</span>
-<span id="cb21-48"><a href="site-selection.html#cb21-48"></a>low_pt &lt;-<span class="st"> </span><span class="kw">st_coordinates</span>(low_pt)</span>
-<span id="cb21-49"><a href="site-selection.html#cb21-49"></a></span>
-<span id="cb21-50"><a href="site-selection.html#cb21-50"></a><span class="co"># extract</span></span>
-<span id="cb21-51"><a href="site-selection.html#cb21-51"></a>abund_hpt1 &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_breeding, high_pt1, <span class="dt">method =</span> <span class="st">&#39;simple&#39;</span>)</span>
-<span id="cb21-52"><a href="site-selection.html#cb21-52"></a>upper_hpt1 &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_upper_br_avg, high_pt1, <span class="dt">method =</span> <span class="st">&#39;simple&#39;</span>)</span>
-<span id="cb21-53"><a href="site-selection.html#cb21-53"></a>lower_hpt1 &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_lower_br_avg, high_pt1, <span class="dt">method =</span> <span class="st">&#39;simple&#39;</span>)</span>
-<span id="cb21-54"><a href="site-selection.html#cb21-54"></a></span>
-<span id="cb21-55"><a href="site-selection.html#cb21-55"></a>abund_hpt2 &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_breeding, high_pt2, <span class="dt">method =</span> <span class="st">&#39;simple&#39;</span>)</span>
-<span id="cb21-56"><a href="site-selection.html#cb21-56"></a>upper_hpt2 &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_upper_br_avg, high_pt2, <span class="dt">method =</span> <span class="st">&#39;simple&#39;</span>)</span>
-<span id="cb21-57"><a href="site-selection.html#cb21-57"></a>lower_hpt2 &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_lower_br_avg, high_pt2, <span class="dt">method =</span> <span class="st">&#39;simple&#39;</span>)</span>
-<span id="cb21-58"><a href="site-selection.html#cb21-58"></a></span>
-<span id="cb21-59"><a href="site-selection.html#cb21-59"></a>abund_lpt1 &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_breeding, low_pt, <span class="dt">method =</span> <span class="st">&#39;simple&#39;</span>)</span>
-<span id="cb21-60"><a href="site-selection.html#cb21-60"></a>upper_lpt1 &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_upper_br_avg, low_pt, <span class="dt">method =</span> <span class="st">&#39;simple&#39;</span>)</span>
-<span id="cb21-61"><a href="site-selection.html#cb21-61"></a>lower_lpt1 &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_lower_br_avg, low_pt, <span class="dt">method =</span> <span class="st">&#39;simple&#39;</span>)</span>
-<span id="cb21-62"><a href="site-selection.html#cb21-62"></a></span>
-<span id="cb21-63"><a href="site-selection.html#cb21-63"></a><span class="co"># create data frame</span></span>
-<span id="cb21-64"><a href="site-selection.html#cb21-64"></a>pts_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">middle =</span> <span class="kw">c</span>(abund_hpt1, abund_hpt2, abund_lpt1),</span>
-<span id="cb21-65"><a href="site-selection.html#cb21-65"></a>                     <span class="dt">upper =</span> <span class="kw">c</span>(upper_hpt1, upper_hpt2, upper_lpt1),</span>
-<span id="cb21-66"><a href="site-selection.html#cb21-66"></a>                     <span class="dt">lower =</span> <span class="kw">c</span>(lower_hpt1, lower_hpt2, lower_lpt1),</span>
-<span id="cb21-67"><a href="site-selection.html#cb21-67"></a>                     <span class="dt">label =</span> <span class="kw">c</span>(<span class="st">&quot;High Point 1&quot;</span>, <span class="st">&quot;High Point 2&quot;</span>, <span class="st">&quot;Lower Point&quot;</span>))</span>
-<span id="cb21-68"><a href="site-selection.html#cb21-68"></a></span>
-<span id="cb21-69"><a href="site-selection.html#cb21-69"></a><span class="co"># plot the confidence intervals for the three points</span></span>
-<span id="cb21-70"><a href="site-selection.html#cb21-70"></a>p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(pts_df, <span class="kw">aes</span>(<span class="dt">y =</span> middle, <span class="dt">x =</span> label))</span>
-<span id="cb21-71"><a href="site-selection.html#cb21-71"></a>p <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymax =</span> upper, <span class="dt">ymin =</span> lower))</span></code></pre></div>
-<p><img src="naoc2020-ebirdst_files/figure-html/unnamed-chunk-5-1.png" width="\textwidth" style="display: block; margin: auto;" /><img src="naoc2020-ebirdst_files/figure-html/unnamed-chunk-5-2.png" width="\textwidth" style="display: block; margin: auto;" /><img src="naoc2020-ebirdst_files/figure-html/unnamed-chunk-5-3.png" width="\textwidth" style="display: block; margin: auto;" /></p>
+<span id="cb21-5"><a href="site-selection.html#cb21-5"></a><span class="co"># calculate abundance quartiles</span></span>
+<span id="cb21-6"><a href="site-selection.html#cb21-6"></a>quarters &lt;-<span class="st"> </span><span class="kw">quantile</span>(abd_breeding_la, <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>))</span>
+<span id="cb21-7"><a href="site-selection.html#cb21-7"></a></span>
+<span id="cb21-8"><a href="site-selection.html#cb21-8"></a><span class="co"># view</span></span>
+<span id="cb21-9"><a href="site-selection.html#cb21-9"></a><span class="kw">plot</span>(abd_breeding_la, </span>
+<span id="cb21-10"><a href="site-selection.html#cb21-10"></a>     <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, quarters), <span class="dt">col =</span> <span class="kw">abundance_palette</span>(<span class="dv">4</span>, <span class="dt">season =</span> <span class="st">&quot;weekly&quot;</span>),</span>
+<span id="cb21-11"><a href="site-selection.html#cb21-11"></a>     <span class="dt">maxpixels =</span> <span class="kw">ncell</span>(abd_breeding_la),</span>
+<span id="cb21-12"><a href="site-selection.html#cb21-12"></a>     <span class="dt">box =</span> <span class="ot">FALSE</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<p><img src="naoc2020-ebirdst_files/figure-html/local-quarters-1.png" width="\textwidth" style="display: block; margin: auto;" /></p>
+<div id="site-local-uncertainty" class="section level3">
+<h3><span class="header-section-number">2.5.1</span> Uncertainty analysis</h3>
+<p>When using these abundance rasters at a local scale, it’s important to be cautious because of the broad spatial scale at which the modeling was conducted. As with any modeled estimates, these abundance estimates have uncertainty associated with them. One approach to dealing with this is to use the spatial estimates of uncertainty (the 10th and 90th quantiles of relative abundance) to assess if locations have overlapping confidence limits.</p>
+<p>Let’s start by loading these upper and lower confidence interval raster layers, subsetting to the breeding season within Louisiana, and calculating a breeding season average.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="site-selection.html#cb22-1"></a><span class="co"># load the upper and lower confidence intervals</span></span>
+<span id="cb22-2"><a href="site-selection.html#cb22-2"></a>abd_upper &lt;-<span class="st"> </span><span class="kw">load_raster</span>(<span class="st">&quot;abundance_upper&quot;</span>, <span class="dt">path =</span> sp_path)</span>
+<span id="cb22-3"><a href="site-selection.html#cb22-3"></a>abd_lower &lt;-<span class="st"> </span><span class="kw">load_raster</span>(<span class="st">&quot;abundance_lower&quot;</span>, <span class="dt">path =</span> sp_path)</span>
+<span id="cb22-4"><a href="site-selection.html#cb22-4"></a></span>
+<span id="cb22-5"><a href="site-selection.html#cb22-5"></a><span class="co"># subset to breeding season in louisiana</span></span>
+<span id="cb22-6"><a href="site-selection.html#cb22-6"></a>la_breeding_season &lt;-<span class="st"> </span><span class="kw">ebirdst_extent</span>(la, </span>
+<span id="cb22-7"><a href="site-selection.html#cb22-7"></a>                                     <span class="kw">c</span>(logshr_run<span class="op">$</span>breeding_start_dt,</span>
+<span id="cb22-8"><a href="site-selection.html#cb22-8"></a>                                       logshr_run<span class="op">$</span>breeding_end_dt))</span>
+<span id="cb22-9"><a href="site-selection.html#cb22-9"></a>abd_upper_br &lt;-<span class="st"> </span><span class="kw">ebirdst_subset</span>(abd_upper, la_breeding_season)</span>
+<span id="cb22-10"><a href="site-selection.html#cb22-10"></a>abd_lower_br &lt;-<span class="st"> </span><span class="kw">ebirdst_subset</span>(abd_lower, la_breeding_season)</span>
+<span id="cb22-11"><a href="site-selection.html#cb22-11"></a></span>
+<span id="cb22-12"><a href="site-selection.html#cb22-12"></a><span class="co"># average for the breeding season and project</span></span>
+<span id="cb22-13"><a href="site-selection.html#cb22-13"></a>abd_upper_br_avg &lt;-<span class="st"> </span><span class="kw">calc</span>(abd_upper_br, <span class="dt">fun =</span> mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-14"><a href="site-selection.html#cb22-14"></a><span class="st">  </span><span class="kw">projectRaster</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection,</span>
+<span id="cb22-15"><a href="site-selection.html#cb22-15"></a>                <span class="dt">method =</span> <span class="st">&quot;ngb&quot;</span>)</span>
+<span id="cb22-16"><a href="site-selection.html#cb22-16"></a>abd_lower_br_avg &lt;-<span class="st"> </span><span class="kw">calc</span>(abd_lower_br, <span class="dt">fun =</span> mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-17"><a href="site-selection.html#cb22-17"></a><span class="st">  </span><span class="kw">projectRaster</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection,</span>
+<span id="cb22-18"><a href="site-selection.html#cb22-18"></a>                <span class="dt">method =</span> <span class="st">&quot;ngb&quot;</span>)</span></code></pre></div>
+<p>Next, let’s imagine we’re considering three potential sites in northern Louisiana, one in each of the top three quartiles of abundance.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="site-selection.html#cb23-1"></a><span class="co"># generate points and convert to spatial</span></span>
+<span id="cb23-2"><a href="site-selection.html#cb23-2"></a>pts &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;High&quot;</span>, <span class="st">&quot;Middle&quot;</span>, <span class="st">&quot;Low&quot;</span>),</span>
+<span id="cb23-3"><a href="site-selection.html#cb23-3"></a>                  <span class="dt">lng =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">92.0777</span>, <span class="fl">-92.1081</span>, <span class="fl">-92.1336</span>),</span>
+<span id="cb23-4"><a href="site-selection.html#cb23-4"></a>                  <span class="dt">lat =</span> <span class="kw">c</span>(<span class="fl">32.2624</span>, <span class="fl">32.2624</span>, <span class="fl">32.2882</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb23-5"><a href="site-selection.html#cb23-5"></a><span class="st">  </span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;lng&quot;</span>, <span class="st">&quot;lat&quot;</span>), <span class="dt">crs =</span> <span class="dv">4326</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb23-6"><a href="site-selection.html#cb23-6"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="dt">crs =</span> <span class="kw">st_crs</span>(map_pars<span class="op">$</span>custom_projection))</span></code></pre></div>
+<p>We can overlay these points on a zoomed-in version of the above quartile map. Note that they each falls within a different colored cell, i.e. they all belong to different quartiles.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="site-selection.html#cb24-1"></a><span class="kw">plot</span>(abd_breeding_la, </span>
+<span id="cb24-2"><a href="site-selection.html#cb24-2"></a>     <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, quarters), </span>
+<span id="cb24-3"><a href="site-selection.html#cb24-3"></a>     <span class="dt">col =</span> <span class="kw">abundance_palette</span>(<span class="dv">4</span>, <span class="dt">season =</span> <span class="st">&quot;weekly&quot;</span>), <span class="dt">alpha =</span> <span class="fl">0.75</span>,</span>
+<span id="cb24-4"><a href="site-selection.html#cb24-4"></a>     <span class="dt">ext =</span> <span class="kw">st_buffer</span>(pts, <span class="dv">10000</span>), </span>
+<span id="cb24-5"><a href="site-selection.html#cb24-5"></a>     <span class="dt">maxpixels =</span> <span class="kw">ncell</span>(abd_breeding_la),</span>
+<span id="cb24-6"><a href="site-selection.html#cb24-6"></a>     <span class="dt">box =</span> <span class="ot">FALSE</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb24-7"><a href="site-selection.html#cb24-7"></a><span class="kw">plot</span>(pts, <span class="dt">pch =</span> <span class="dv">21</span>, <span class="dt">bg =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">cex =</span> <span class="dv">1</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="naoc2020-ebirdst_files/figure-html/local-uncertainty-map-1.png" width="\textwidth" style="display: block; margin: auto;" /></p>
+<p>Let’s look at the abundance and confidence intervals for each of these points.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="site-selection.html#cb25-1"></a><span class="co"># extract raster values</span></span>
+<span id="cb25-2"><a href="site-selection.html#cb25-2"></a>pts<span class="op">$</span>abd &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_breeding_la, pts)</span>
+<span id="cb25-3"><a href="site-selection.html#cb25-3"></a>pts<span class="op">$</span>lower &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_lower_br_avg, pts)</span>
+<span id="cb25-4"><a href="site-selection.html#cb25-4"></a>pts<span class="op">$</span>upper &lt;-<span class="st"> </span><span class="kw">extract</span>(abd_upper_br_avg, pts)</span>
+<span id="cb25-5"><a href="site-selection.html#cb25-5"></a></span>
+<span id="cb25-6"><a href="site-selection.html#cb25-6"></a><span class="co"># plot the confidence intervals for the three points</span></span>
+<span id="cb25-7"><a href="site-selection.html#cb25-7"></a><span class="kw">ggplot</span>(pts, <span class="kw">aes</span>(<span class="dt">y =</span> abd, <span class="dt">x =</span> name)) <span class="op">+</span></span>
+<span id="cb25-8"><a href="site-selection.html#cb25-8"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb25-9"><a href="site-selection.html#cb25-9"></a><span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> lower, <span class="dt">ymax =</span> upper)) <span class="op">+</span></span>
+<span id="cb25-10"><a href="site-selection.html#cb25-10"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Location&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Relative Abundance&quot;</span>,</span>
+<span id="cb25-11"><a href="site-selection.html#cb25-11"></a>       <span class="dt">title =</span> <span class="st">&quot;Confidence intervals for locations&quot;</span>)</span></code></pre></div>
+<p><img src="naoc2020-ebirdst_files/figure-html/unnamed-chunk-5-1.png" width="\textwidth" style="display: block; margin: auto;" /></p>
 
+</div>
 </div>
 </div>
             </section>
@@ -334,8 +337,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="access.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="access.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="multi-species-trajectories.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

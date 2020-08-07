@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>NAOC 2020: eBird Status and Trends</title>
+  <title>Chapter 3 Multi-species Trajectories | NAOC 2020: eBird Status and Trends</title>
   <meta name="description" content="Lessons for a workshop on accessing and using eBird Status and Trends data given at NAOC 2020" />
   <meta name="generator" content="bookdown 0.20.1 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="NAOC 2020: eBird Status and Trends" />
+  <meta property="og:title" content="Chapter 3 Multi-species Trajectories | NAOC 2020: eBird Status and Trends" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="NAOC 2020: eBird Status and Trends" />
+  <meta name="twitter:title" content="Chapter 3 Multi-species Trajectories | NAOC 2020: eBird Status and Trends" />
   
   <meta name="twitter:description" content="Lessons for a workshop on accessing and using eBird Status and Trends data given at NAOC 2020" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
+<link rel="prev" href="site-selection.html"/>
 
-<link rel="next" href="access.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -176,20 +176,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">NAOC 2020: eBird Status and Trends</h1>
-<p class="author"><em>Matthew Strimas-Mackey, Tom Auer</em></p>
-<p class="date"><em>2020-08-10</em></p>
+<div id="multi-species-trajectories" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Multi-species Trajectories</h1>
+<div id="traj-objective" class="section level2">
+<h2><span class="header-section-number">3.1</span> Objective</h2>
+<p>To prepare data for multiple species and look at them both spatially and temporally, as species richness and proportion of population. This is an example of something you might do when prioritizing or targeting conservation and management of species groups.</p>
 </div>
-<div id="welcome" class="section level1 unnumbered">
-<h1>Welcome</h1>
-<p>The community science project <a href="https://ebird.org/home">eBird</a> has generated a database of over 800 million bird observations, with broad spatial and taxonomic coverage. Over the past 10 years, the <a href="https://www.birds.cornell.edu/home/">Cornell Lab of Ornithology</a> has developed machine-learning models using eBird and remotely-sensed data to produce high resolution, weekly estimates of range boundaries, occurrence rate, and relative abundance while accounting for many of the biases inherent in community science datasets, including variation in observer behavior and effort. Visualizations and modeled data products for 610 North American breeding birds, including resident and non-breeding grounds in South America, are currently available on the <a href="https://ebird.org/science/status-and-trends">eBird Status and Trends website</a>.</p>
-<p>This workshop will introduce attendees to the modeled data products (weekly estimates of range boundaries, occurrence rate, and relative abundance) and the <code>ebirdst</code> R package developed specifically for working with these data. This will include an introduction to the modeling process used to generate the eBird Status and Trends data products. It will also include a demonstration of how to access and manipulate these data products for specific combinations of species, seasons, and regions using the <code>ebirdst</code> package. After the workshop, attendees will have an understanding of how and when to use these data products for applied research and conservation efforts, including within-year dynamics. Some experience with R will be helpful in following along with the demonstration. Please note, this workshop will not cover the analysis of trends or trend data.</p>
-<div id="setup" class="section level2">
-<h2><span class="header-section-number">0.1</span> Setup</h2>
-<p>To run the code in the workshop you’ll need to install the following packages:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1"></a><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;tidyverse&quot;</span>, <span class="st">&quot;raster&quot;</span>, <span class="st">&quot;sf&quot;</span>, <span class="st">&quot;ebirdst&quot;</span>, <span class="st">&quot;rnaturalearth&quot;</span>))</span></code></pre></div>
-<p>To download the source files and following along with this workshop visit the <a href="https://github.com/mstrimas/naoc2020-ebirdst/">GitHub repository</a>.</p>
+<div id="traj-intro" class="section level2">
+<h2><span class="header-section-number">3.2</span> Introduction</h2>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="multi-species-trajectories.html#cb26-1"></a><span class="kw">library</span>(ebirdst)</span>
+<span id="cb26-2"><a href="multi-species-trajectories.html#cb26-2"></a><span class="kw">library</span>(raster)</span>
+<span id="cb26-3"><a href="multi-species-trajectories.html#cb26-3"></a><span class="kw">library</span>(sf)</span>
+<span id="cb26-4"><a href="multi-species-trajectories.html#cb26-4"></a><span class="kw">library</span>(tidyverse)</span></code></pre></div>
+</div>
+<div id="traj-data" class="section level2">
+<h2><span class="header-section-number">3.3</span> Multi-species data</h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="multi-species-trajectories.html#cb27-1"></a>species &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Tree Swallow&quot;</span>, <span class="st">&quot;Northern Rough-winged Swallow&quot;</span>, </span>
+<span id="cb27-2"><a href="multi-species-trajectories.html#cb27-2"></a>             <span class="st">&quot;Barn Swallow&quot;</span>, <span class="st">&quot;Violet-green Swallow&quot;</span>, <span class="st">&quot;Cave Swallow&quot;</span>, </span>
+<span id="cb27-3"><a href="multi-species-trajectories.html#cb27-3"></a>             <span class="st">&quot;Chimney Swift&quot;</span>, <span class="st">&quot;Purple Martin&quot;</span>)</span>
+<span id="cb27-4"><a href="multi-species-trajectories.html#cb27-4"></a>sp_dirs &lt;-<span class="st"> </span><span class="kw">map_chr</span>(species, ebirdst_download)</span></code></pre></div>
 
 </div>
 </div>
@@ -198,8 +203,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
+<a href="site-selection.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
-<a href="access.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -100,7 +100,7 @@ map_pars <- load_fac_map_parameters(sp_path)
 # crop and reproject abundance raster
 abd_proj <- abd[[20]] %>% 
   crop(map_pars$fa_extent_sinu) %>% 
-  projectRaster(crs = map_pars$custom_projection)
+  projectRaster(crs = map_pars$custom_projection, method = "ngb")
 
 # map
 par(mar = c(0, 0, 0, 0))

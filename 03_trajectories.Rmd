@@ -1,0 +1,37 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Multi-species Trajectories
+
+## Objective {#traj-objective}
+
+To prepare data for multiple species and look at them both spatially and temporally, as species richness and proportion of population. This is an example of something you might do when prioritizing or targeting conservation and management of species groups.
+
+## Introduction {#traj-intro}
+
+```{r traj-libraries}
+library(ebirdst)
+library(raster)
+library(sf)
+library(tidyverse)
+```
+
+## Multi-species data {#traj-data}
+
+```{r data-dl, eval=FALSE}
+species <- c("Tree Swallow", "Northern Rough-winged Swallow", 
+             "Barn Swallow", "Violet-green Swallow", "Cave Swallow", 
+             "Chimney Swift", "Purple Martin")
+sp_dirs <- map_chr(species, ebirdst_download)
+```
+
+```{r data-dirs, echo = FALSE}
+species <- c("Tree Swallow", "Northern Rough-winged Swallow", 
+             "Barn Swallow", "Violet-green Swallow", "Cave Swallow", 
+             "Chimney Swift", "Purple Martin")
+sp_dirs <- map_chr(species, get_species_path)
+```
+

@@ -17,3 +17,5 @@ knitr::opts_chunk$set(
 )
 options(knitr.kable.NA = "")
 options(dplyr.print_min = 6, dplyr.print_max = 6)
+
+par(mar = c(0, 0, 0, 0))

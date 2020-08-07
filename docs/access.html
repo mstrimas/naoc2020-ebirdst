@@ -146,11 +146,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.6" data-path="access.html"><a href="access.html#map"><i class="fa fa-check"></i><b>1.6</b> Mapping</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="site-selection.html"><a href="site-selection.html"><i class="fa fa-check"></i><b>2</b> Site Selection</a><ul>
-<li class="chapter" data-level="2.1" data-path="access.html"><a href="access.html#objective"><i class="fa fa-check"></i><b>2.1</b> Objective</a></li>
-<li class="chapter" data-level="2.2" data-path="access.html"><a href="access.html#intro"><i class="fa fa-check"></i><b>2.2</b> Introduction</a></li>
-<li class="chapter" data-level="2.3" data-path="site-selection.html"><a href="site-selection.html#seasonal"><i class="fa fa-check"></i><b>2.3</b> Seasonal abundance data</a></li>
-<li class="chapter" data-level="2.4" data-path="site-selection.html"><a href="site-selection.html#rangewide"><i class="fa fa-check"></i><b>2.4</b> Range-wide site selection</a></li>
-<li class="chapter" data-level="2.5" data-path="site-selection.html"><a href="site-selection.html#local"><i class="fa fa-check"></i><b>2.5</b> Local Selection</a></li>
+<li class="chapter" data-level="2.1" data-path="site-selection.html"><a href="site-selection.html#site-objective"><i class="fa fa-check"></i><b>2.1</b> Objective</a></li>
+<li class="chapter" data-level="2.2" data-path="site-selection.html"><a href="site-selection.html#site-intro"><i class="fa fa-check"></i><b>2.2</b> Introduction</a></li>
+<li class="chapter" data-level="2.3" data-path="site-selection.html"><a href="site-selection.html#site-seasonal"><i class="fa fa-check"></i><b>2.3</b> Seasonal abundance data</a></li>
+<li class="chapter" data-level="2.4" data-path="site-selection.html"><a href="site-selection.html#site-rangewide"><i class="fa fa-check"></i><b>2.4</b> Range-wide site selection</a></li>
+<li class="chapter" data-level="2.5" data-path="site-selection.html"><a href="site-selection.html#site-local"><i class="fa fa-check"></i><b>2.5</b> Local Selection</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="site-selection.html"><a href="site-selection.html#site-local-uncertainty"><i class="fa fa-check"></i><b>2.5.1</b> Uncertainty analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html"><i class="fa fa-check"></i><b>3</b> Multi-species Trajectories</a><ul>
+<li class="chapter" data-level="3.1" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-objective"><i class="fa fa-check"></i><b>3.1</b> Objective</a></li>
+<li class="chapter" data-level="3.2" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-intro"><i class="fa fa-check"></i><b>3.2</b> Introduction</a></li>
+<li class="chapter" data-level="3.3" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-data"><i class="fa fa-check"></i><b>3.3</b> Multi-species data</a></li>
 </ul></li>
 </ul>
 
@@ -285,7 +292,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-4"><a href="access.html#cb12-4"></a><span class="co"># crop and reproject abundance raster</span></span>
 <span id="cb12-5"><a href="access.html#cb12-5"></a>abd_proj &lt;-<span class="st"> </span>abd[[<span class="dv">20</span>]] <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb12-6"><a href="access.html#cb12-6"></a><span class="st">  </span><span class="kw">crop</span>(map_pars<span class="op">$</span>fa_extent_sinu) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb12-7"><a href="access.html#cb12-7"></a><span class="st">  </span><span class="kw">projectRaster</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection)</span>
+<span id="cb12-7"><a href="access.html#cb12-7"></a><span class="st">  </span><span class="kw">projectRaster</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection, <span class="dt">method =</span> <span class="st">&quot;ngb&quot;</span>)</span>
 <span id="cb12-8"><a href="access.html#cb12-8"></a></span>
 <span id="cb12-9"><a href="access.html#cb12-9"></a><span class="co"># map</span></span>
 <span id="cb12-10"><a href="access.html#cb12-10"></a><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
