@@ -1,0 +1,1 @@
+Repository for the eBird Status and Trends workshop at NAOC 2020.
