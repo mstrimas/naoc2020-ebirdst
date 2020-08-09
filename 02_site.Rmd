@@ -126,9 +126,7 @@ abd_upper <- load_raster("abundance_upper", path = sp_path)
 abd_lower <- load_raster("abundance_lower", path = sp_path)
 
 # subset to breeding season in louisiana
-la_breeding_season <- ebirdst_extent(la, 
-                                     c(logshr_run$breeding_start_dt,
-                                       logshr_run$breeding_end_dt))
+la_breeding_season <- ebirdst_extent(la, c(start_dt, end_dt))
 abd_upper_br <- ebirdst_subset(abd_upper, la_breeding_season)
 abd_lower_br <- ebirdst_subset(abd_lower, la_breeding_season)
 

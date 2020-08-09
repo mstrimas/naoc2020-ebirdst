@@ -163,6 +163,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.5" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-traj"><i class="fa fa-check"></i><b>3.5</b> Trajectories</a></li>
 <li class="chapter" data-level="3.6" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-rich"><i class="fa fa-check"></i><b>3.6</b> Richness</a></li>
 </ul></li>
+<li class="chapter" data-level="4" data-path="non-raster-data.html"><a href="non-raster-data.html"><i class="fa fa-check"></i><b>4</b> Non-raster Data</a><ul>
+<li class="chapter" data-level="4.1" data-path="non-raster-data.html"><a href="non-raster-data.html#nonraster-objective"><i class="fa fa-check"></i><b>4.1</b> Objective</a></li>
+<li class="chapter" data-level="4.2" data-path="non-raster-data.html"><a href="non-raster-data.html#nonraster-intro"><i class="fa fa-check"></i><b>4.2</b> Introduction</a></li>
+<li class="chapter" data-level="4.3" data-path="non-raster-data.html"><a href="non-raster-data.html#nonraster-effext"><i class="fa fa-check"></i><b>4.3</b> Effective extent</a></li>
+<li class="chapter" data-level="4.4" data-path="non-raster-data.html"><a href="non-raster-data.html#nonraster-ppms"><i class="fa fa-check"></i><b>4.4</b> Predictive performance metrics</a></li>
+<li class="chapter" data-level="4.5" data-path="non-raster-data.html"><a href="non-raster-data.html#nonraster-pi"><i class="fa fa-check"></i><b>4.5</b> Predictor importance</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -288,19 +295,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb21-3"><a href="site-selection.html#cb21-3"></a>abd_lower &lt;-<span class="st"> </span><span class="kw">load_raster</span>(<span class="st">&quot;abundance_lower&quot;</span>, <span class="dt">path =</span> sp_path)</span>
 <span id="cb21-4"><a href="site-selection.html#cb21-4"></a></span>
 <span id="cb21-5"><a href="site-selection.html#cb21-5"></a><span class="co"># subset to breeding season in louisiana</span></span>
-<span id="cb21-6"><a href="site-selection.html#cb21-6"></a>la_breeding_season &lt;-<span class="st"> </span><span class="kw">ebirdst_extent</span>(la, </span>
-<span id="cb21-7"><a href="site-selection.html#cb21-7"></a>                                     <span class="kw">c</span>(logshr_run<span class="op">$</span>breeding_start_dt,</span>
-<span id="cb21-8"><a href="site-selection.html#cb21-8"></a>                                       logshr_run<span class="op">$</span>breeding_end_dt))</span>
-<span id="cb21-9"><a href="site-selection.html#cb21-9"></a>abd_upper_br &lt;-<span class="st"> </span><span class="kw">ebirdst_subset</span>(abd_upper, la_breeding_season)</span>
-<span id="cb21-10"><a href="site-selection.html#cb21-10"></a>abd_lower_br &lt;-<span class="st"> </span><span class="kw">ebirdst_subset</span>(abd_lower, la_breeding_season)</span>
-<span id="cb21-11"><a href="site-selection.html#cb21-11"></a></span>
-<span id="cb21-12"><a href="site-selection.html#cb21-12"></a><span class="co"># average for the breeding season and project</span></span>
-<span id="cb21-13"><a href="site-selection.html#cb21-13"></a>abd_upper_br_avg &lt;-<span class="st"> </span><span class="kw">calc</span>(abd_upper_br, <span class="dt">fun =</span> mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-14"><a href="site-selection.html#cb21-14"></a><span class="st">  </span><span class="kw">projectRaster</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection,</span>
-<span id="cb21-15"><a href="site-selection.html#cb21-15"></a>                <span class="dt">method =</span> <span class="st">&quot;ngb&quot;</span>)</span>
-<span id="cb21-16"><a href="site-selection.html#cb21-16"></a>abd_lower_br_avg &lt;-<span class="st"> </span><span class="kw">calc</span>(abd_lower_br, <span class="dt">fun =</span> mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-17"><a href="site-selection.html#cb21-17"></a><span class="st">  </span><span class="kw">projectRaster</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection,</span>
-<span id="cb21-18"><a href="site-selection.html#cb21-18"></a>                <span class="dt">method =</span> <span class="st">&quot;ngb&quot;</span>)</span></code></pre></div>
+<span id="cb21-6"><a href="site-selection.html#cb21-6"></a>la_breeding_season &lt;-<span class="st"> </span><span class="kw">ebirdst_extent</span>(la, <span class="kw">c</span>(start_dt, end_dt))</span>
+<span id="cb21-7"><a href="site-selection.html#cb21-7"></a>abd_upper_br &lt;-<span class="st"> </span><span class="kw">ebirdst_subset</span>(abd_upper, la_breeding_season)</span>
+<span id="cb21-8"><a href="site-selection.html#cb21-8"></a>abd_lower_br &lt;-<span class="st"> </span><span class="kw">ebirdst_subset</span>(abd_lower, la_breeding_season)</span>
+<span id="cb21-9"><a href="site-selection.html#cb21-9"></a></span>
+<span id="cb21-10"><a href="site-selection.html#cb21-10"></a><span class="co"># average for the breeding season and project</span></span>
+<span id="cb21-11"><a href="site-selection.html#cb21-11"></a>abd_upper_br_avg &lt;-<span class="st"> </span><span class="kw">calc</span>(abd_upper_br, <span class="dt">fun =</span> mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-12"><a href="site-selection.html#cb21-12"></a><span class="st">  </span><span class="kw">projectRaster</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection,</span>
+<span id="cb21-13"><a href="site-selection.html#cb21-13"></a>                <span class="dt">method =</span> <span class="st">&quot;ngb&quot;</span>)</span>
+<span id="cb21-14"><a href="site-selection.html#cb21-14"></a>abd_lower_br_avg &lt;-<span class="st"> </span><span class="kw">calc</span>(abd_lower_br, <span class="dt">fun =</span> mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-15"><a href="site-selection.html#cb21-15"></a><span class="st">  </span><span class="kw">projectRaster</span>(<span class="dt">crs =</span> map_pars<span class="op">$</span>custom_projection,</span>
+<span id="cb21-16"><a href="site-selection.html#cb21-16"></a>                <span class="dt">method =</span> <span class="st">&quot;ngb&quot;</span>)</span></code></pre></div>
 <p>Next, let’s imagine we’re considering three potential sites in northern Louisiana, one in each of the top three quartiles of abundance.</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="site-selection.html#cb22-1"></a><span class="co"># generate points and convert to spatial</span></span>
 <span id="cb22-2"><a href="site-selection.html#cb22-2"></a>pts &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;High&quot;</span>, <span class="st">&quot;Middle&quot;</span>, <span class="st">&quot;Low&quot;</span>),</span>
