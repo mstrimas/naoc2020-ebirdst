@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 3 Multi-species Trajectories | NAOC 2020: eBird Status and Trends</title>
+  <title>Lesson 3 Multi-species Trajectories | NAOC 2020: eBird Status and Trends</title>
   <meta name="description" content="Lessons for a workshop on accessing and using eBird Status and Trends data given at NAOC 2020" />
   <meta name="generator" content="bookdown 0.20.1 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 3 Multi-species Trajectories | NAOC 2020: eBird Status and Trends" />
+  <meta property="og:title" content="Lesson 3 Multi-species Trajectories | NAOC 2020: eBird Status and Trends" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 3 Multi-species Trajectories | NAOC 2020: eBird Status and Trends" />
+  <meta name="twitter:title" content="Lesson 3 Multi-species Trajectories | NAOC 2020: eBird Status and Trends" />
   
   <meta name="twitter:description" content="Lessons for a workshop on accessing and using eBird Status and Trends data given at NAOC 2020" />
   
@@ -161,6 +161,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.3" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-data"><i class="fa fa-check"></i><b>3.3</b> Multi-species data</a></li>
 <li class="chapter" data-level="3.4" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-pop"><i class="fa fa-check"></i><b>3.4</b> Proportion of population</a></li>
 <li class="chapter" data-level="3.5" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-traj"><i class="fa fa-check"></i><b>3.5</b> Trajectories</a></li>
+<li class="chapter" data-level="3.6" data-path="multi-species-trajectories.html"><a href="multi-species-trajectories.html#traj-rich"><i class="fa fa-check"></i><b>3.6</b> Richness</a></li>
 </ul></li>
 </ul>
 
@@ -180,82 +181,96 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="multi-species-trajectories" class="section level1">
-<h1><span class="header-section-number">Chapter 3</span> Multi-species Trajectories</h1>
+<h1><span class="header-section-number">Lesson 3</span> Multi-species Trajectories</h1>
 <div id="traj-objective" class="section level2">
 <h2><span class="header-section-number">3.1</span> Objective</h2>
-<p>To prepare data for comparing Status and Trends data across multiple species. We’ll compute proportion of population trajectories for a suite of species.</p>
+<p>To prepare data for comparing Status and Trends results across multiple species. As an example, we’ll compute proportion of population trajectories for a suite of species.</p>
 </div>
 <div id="traj-intro" class="section level2">
 <h2><span class="header-section-number">3.2</span> Introduction</h2>
-<p>Comparing Status and Trends results between species requires extra caution because the models give <em>relative</em> rather than absolute abundance. Therefore the raw data cannot be directly compared between species because, for example, species differ in their detectability. To address this, we’ll convert relative abundance to proportion of population for each species by dividing by the total abundance summed across the entire range. In addition, in this lesson we’ll look at the temporal dimension of these data, plotting trajectories through time for a given region.</p>
+<p>Comparing Status and Trends results between species requires extra caution because the models give <em>relative</em> rather than absolute abundance. For example, species differ in their detectability, and this may cause in differences in relative abundance. To address this, we’ll convert relative abundance to a proportion of population metric for each species by dividing the abundance layer by the total abundance summed across the entire range. For any given cell, this gives the proportion of relative abundance occurring in that cell. In addition, in this lesson we’ll look at the temporal dimension of these data, plotting trajectories through time for a given region.</p>
 <p>Let’s start by loading the necessary packages for this lesson.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="multi-species-trajectories.html#cb26-1"></a><span class="kw">library</span>(ebirdst)</span>
-<span id="cb26-2"><a href="multi-species-trajectories.html#cb26-2"></a><span class="kw">library</span>(raster)</span>
-<span id="cb26-3"><a href="multi-species-trajectories.html#cb26-3"></a><span class="kw">library</span>(sf)</span>
-<span id="cb26-4"><a href="multi-species-trajectories.html#cb26-4"></a><span class="kw">library</span>(rnaturalearth)</span>
-<span id="cb26-5"><a href="multi-species-trajectories.html#cb26-5"></a><span class="kw">library</span>(tidyverse)</span>
-<span id="cb26-6"><a href="multi-species-trajectories.html#cb26-6"></a><span class="kw">library</span>(parallel)</span>
-<span id="cb26-7"><a href="multi-species-trajectories.html#cb26-7"></a>extract &lt;-<span class="st"> </span>raster<span class="op">::</span>extract</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="multi-species-trajectories.html#cb25-1"></a><span class="kw">library</span>(ebirdst)</span>
+<span id="cb25-2"><a href="multi-species-trajectories.html#cb25-2"></a><span class="kw">library</span>(raster)</span>
+<span id="cb25-3"><a href="multi-species-trajectories.html#cb25-3"></a><span class="kw">library</span>(sf)</span>
+<span id="cb25-4"><a href="multi-species-trajectories.html#cb25-4"></a><span class="kw">library</span>(rnaturalearth)</span>
+<span id="cb25-5"><a href="multi-species-trajectories.html#cb25-5"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb25-6"><a href="multi-species-trajectories.html#cb25-6"></a><span class="kw">library</span>(parallel)</span>
+<span id="cb25-7"><a href="multi-species-trajectories.html#cb25-7"></a>extract &lt;-<span class="st"> </span>raster<span class="op">::</span>extract</span></code></pre></div>
 <p>For this example, we’ll be looking at a suite of shorebird species in Kansas, so let’s also get a boundary polygon for that state.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="multi-species-trajectories.html#cb27-1"></a>ks &lt;-<span class="st"> </span><span class="kw">ne_states</span>(<span class="dt">iso_a2 =</span> <span class="st">&quot;US&quot;</span>, <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb27-2"><a href="multi-species-trajectories.html#cb27-2"></a><span class="st">  </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &quot;Kansas&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="multi-species-trajectories.html#cb26-1"></a>ks &lt;-<span class="st"> </span><span class="kw">ne_states</span>(<span class="dt">iso_a2 =</span> <span class="st">&quot;US&quot;</span>, <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-2"><a href="multi-species-trajectories.html#cb26-2"></a><span class="st">  </span><span class="kw">filter</span>(name <span class="op">==</span><span class="st"> &quot;Kansas&quot;</span>)</span></code></pre></div>
 </div>
 <div id="traj-data" class="section level2">
 <h2><span class="header-section-number">3.3</span> Multi-species data</h2>
 <p>We begin by downloading data for a suite of 7 shorebird species that all spend at least a portion of the year within Kansas.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="multi-species-trajectories.html#cb28-1"></a>species &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;American Avocet&quot;</span>, <span class="st">&quot;Snowy Plover&quot;</span>, <span class="st">&quot;Hudsonian Godwit&quot;</span>, </span>
-<span id="cb28-2"><a href="multi-species-trajectories.html#cb28-2"></a>             <span class="st">&quot;Willet&quot;</span>, <span class="st">&quot;Marbled Godwit&quot;</span>, <span class="st">&quot;Sanderling&quot;</span>, </span>
-<span id="cb28-3"><a href="multi-species-trajectories.html#cb28-3"></a>             <span class="st">&quot;Semipalmated Sandpiper&quot;</span>)</span>
-<span id="cb28-4"><a href="multi-species-trajectories.html#cb28-4"></a>sp_dirs &lt;-<span class="st"> </span><span class="kw">map_chr</span>(species, ebirdst_download)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="multi-species-trajectories.html#cb27-1"></a>species &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;American Avocet&quot;</span>, <span class="st">&quot;Snowy Plover&quot;</span>, <span class="st">&quot;Hudsonian Godwit&quot;</span>, </span>
+<span id="cb27-2"><a href="multi-species-trajectories.html#cb27-2"></a>             <span class="st">&quot;Willet&quot;</span>, <span class="st">&quot;Marbled Godwit&quot;</span>, <span class="st">&quot;Sanderling&quot;</span>, </span>
+<span id="cb27-3"><a href="multi-species-trajectories.html#cb27-3"></a>             <span class="st">&quot;Semipalmated Sandpiper&quot;</span>)</span>
+<span id="cb27-4"><a href="multi-species-trajectories.html#cb27-4"></a>sp_dirs &lt;-<span class="st"> </span><span class="kw">map_chr</span>(species, ebirdst_download) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb27-5"><a href="multi-species-trajectories.html#cb27-5"></a><span class="st">  </span><span class="kw">setNames</span>(species)</span></code></pre></div>
 </div>
 <div id="traj-pop" class="section level2">
 <h2><span class="header-section-number">3.4</span> Proportion of population</h2>
-<p>Our goal is to produce trajectories comparing the proportion of each species’ population within Kansas. For each species we need to:</p>
+<p>Our goal is to produce trajectories comparing the proportion of each species’ population within Kansas for each week of 2018. For each species we need to:</p>
 <ol style="list-style-type: decimal">
 <li>Calculate the sum of the abundance within Kansas for each week</li>
 <li>Calculate the sum of the abundance across the entire range of the species for each week</li>
 <li>Calculate the proportion of the population as the ratio of the within Kansas abundance to the total abundance</li>
 </ol>
-<p>The below function performs these steps for a given species. Iterating over the full set of species is fairly computationally intensive, taking about 30 minutes on a modern laptop.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="multi-species-trajectories.html#cb29-1"></a>calculate_trajectory &lt;-<span class="st"> </span><span class="cf">function</span>(x, common_name, region) {</span>
-<span id="cb29-2"><a href="multi-species-trajectories.html#cb29-2"></a>  <span class="kw">message</span>(<span class="kw">names</span>(x))</span>
-<span id="cb29-3"><a href="multi-species-trajectories.html#cb29-3"></a>  <span class="co"># load and project weekly abundance</span></span>
-<span id="cb29-4"><a href="multi-species-trajectories.html#cb29-4"></a>  abd &lt;-<span class="st"> </span><span class="kw">load_raster</span>(<span class="st">&quot;abundance&quot;</span>, <span class="dt">path =</span> x)</span>
-<span id="cb29-5"><a href="multi-species-trajectories.html#cb29-5"></a>  r &lt;-<span class="st"> </span><span class="kw">st_transform</span>(region, <span class="dt">crs =</span> <span class="kw">st_crs</span>(abd))</span>
-<span id="cb29-6"><a href="multi-species-trajectories.html#cb29-6"></a>  </span>
-<span id="cb29-7"><a href="multi-species-trajectories.html#cb29-7"></a>  <span class="co"># total abundance within region</span></span>
-<span id="cb29-8"><a href="multi-species-trajectories.html#cb29-8"></a>  abd_region &lt;-<span class="st"> </span>abd <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb29-9"><a href="multi-species-trajectories.html#cb29-9"></a><span class="st">    </span><span class="kw">crop</span>(r) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb29-10"><a href="multi-species-trajectories.html#cb29-10"></a><span class="st">    </span><span class="kw">extract</span>(r, <span class="dt">fun =</span> sum)</span>
-<span id="cb29-11"><a href="multi-species-trajectories.html#cb29-11"></a>  abd_region &lt;-<span class="st"> </span>abd_region[<span class="dv">1</span>, , drop =<span class="st"> </span><span class="ot">TRUE</span>]</span>
-<span id="cb29-12"><a href="multi-species-trajectories.html#cb29-12"></a>  </span>
-<span id="cb29-13"><a href="multi-species-trajectories.html#cb29-13"></a>  <span class="co"># calculate total range-wide abundance</span></span>
-<span id="cb29-14"><a href="multi-species-trajectories.html#cb29-14"></a>  abd_total &lt;-<span class="st"> </span><span class="kw">mclapply</span>(<span class="kw">seq.int</span>(<span class="kw">nlayers</span>(abd)),</span>
-<span id="cb29-15"><a href="multi-species-trajectories.html#cb29-15"></a>                        <span class="cf">function</span>(i) <span class="kw">cellStats</span>(abd[[i]], sum),</span>
-<span id="cb29-16"><a href="multi-species-trajectories.html#cb29-16"></a>                        <span class="dt">mc.preschedule =</span> <span class="ot">TRUE</span>, <span class="dt">mc.set.seed =</span> <span class="ot">TRUE</span>, </span>
-<span id="cb29-17"><a href="multi-species-trajectories.html#cb29-17"></a>                        <span class="dt">mc.cores =</span> <span class="kw">detectCores</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb29-18"><a href="multi-species-trajectories.html#cb29-18"></a><span class="st">    </span><span class="kw">unlist</span>()</span>
-<span id="cb29-19"><a href="multi-species-trajectories.html#cb29-19"></a>  </span>
-<span id="cb29-20"><a href="multi-species-trajectories.html#cb29-20"></a>  <span class="kw">data.frame</span>(<span class="dt">common_name =</span> common_name,</span>
-<span id="cb29-21"><a href="multi-species-trajectories.html#cb29-21"></a>             <span class="dt">date =</span> <span class="kw">parse_raster_dates</span>(abd),</span>
-<span id="cb29-22"><a href="multi-species-trajectories.html#cb29-22"></a>             <span class="dt">prop_pop =</span> abd_region <span class="op">/</span><span class="st"> </span>abd_total,</span>
-<span id="cb29-23"><a href="multi-species-trajectories.html#cb29-23"></a>             <span class="dt">row.names =</span> <span class="ot">NULL</span>)</span>
-<span id="cb29-24"><a href="multi-species-trajectories.html#cb29-24"></a>}</span>
-<span id="cb29-25"><a href="multi-species-trajectories.html#cb29-25"></a>trajectories &lt;-<span class="st"> </span><span class="kw">map2_dfr</span>(sp_dirs, <span class="kw">names</span>(sp_dirs), </span>
-<span id="cb29-26"><a href="multi-species-trajectories.html#cb29-26"></a>                         calculate_trajectory,</span>
-<span id="cb29-27"><a href="multi-species-trajectories.html#cb29-27"></a>                         <span class="dt">region =</span> ks)</span>
-<span id="cb29-28"><a href="multi-species-trajectories.html#cb29-28"></a><span class="kw">write_csv</span>(trajectories,  <span class="st">&quot;data/shorebird_pop-trajectories.csv&quot;</span>)</span></code></pre></div>
+<p>The below function performs these steps for a given species. Iterating over the full set of species is fairly computationally intensive, taking about 20 minutes on a laptop.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="multi-species-trajectories.html#cb28-1"></a>calculate_trajectory &lt;-<span class="st"> </span><span class="cf">function</span>(x, common_name, region) {</span>
+<span id="cb28-2"><a href="multi-species-trajectories.html#cb28-2"></a>  <span class="kw">message</span>(<span class="kw">names</span>(x))</span>
+<span id="cb28-3"><a href="multi-species-trajectories.html#cb28-3"></a>  <span class="co"># load and project weekly abundance</span></span>
+<span id="cb28-4"><a href="multi-species-trajectories.html#cb28-4"></a>  abd &lt;-<span class="st"> </span><span class="kw">load_raster</span>(<span class="st">&quot;abundance&quot;</span>, <span class="dt">path =</span> x)</span>
+<span id="cb28-5"><a href="multi-species-trajectories.html#cb28-5"></a>  r &lt;-<span class="st"> </span><span class="kw">st_transform</span>(region, <span class="dt">crs =</span> <span class="kw">st_crs</span>(abd))</span>
+<span id="cb28-6"><a href="multi-species-trajectories.html#cb28-6"></a>  </span>
+<span id="cb28-7"><a href="multi-species-trajectories.html#cb28-7"></a>  <span class="co"># total abundance within region</span></span>
+<span id="cb28-8"><a href="multi-species-trajectories.html#cb28-8"></a>  abd_region &lt;-<span class="st"> </span>abd <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-9"><a href="multi-species-trajectories.html#cb28-9"></a><span class="st">    </span><span class="kw">crop</span>(r) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-10"><a href="multi-species-trajectories.html#cb28-10"></a><span class="st">    </span><span class="kw">extract</span>(r, <span class="dt">fun =</span> sum)</span>
+<span id="cb28-11"><a href="multi-species-trajectories.html#cb28-11"></a>  abd_region &lt;-<span class="st"> </span>abd_region[<span class="dv">1</span>, , drop =<span class="st"> </span><span class="ot">TRUE</span>]</span>
+<span id="cb28-12"><a href="multi-species-trajectories.html#cb28-12"></a>  </span>
+<span id="cb28-13"><a href="multi-species-trajectories.html#cb28-13"></a>  <span class="co"># calculate total range-wide abundance</span></span>
+<span id="cb28-14"><a href="multi-species-trajectories.html#cb28-14"></a>  abd_total &lt;-<span class="st"> </span><span class="kw">mclapply</span>(<span class="kw">seq.int</span>(<span class="kw">nlayers</span>(abd)),</span>
+<span id="cb28-15"><a href="multi-species-trajectories.html#cb28-15"></a>                        <span class="cf">function</span>(i) <span class="kw">cellStats</span>(abd[[i]], sum),</span>
+<span id="cb28-16"><a href="multi-species-trajectories.html#cb28-16"></a>                        <span class="dt">mc.preschedule =</span> <span class="ot">TRUE</span>, <span class="dt">mc.set.seed =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb28-17"><a href="multi-species-trajectories.html#cb28-17"></a>                        <span class="dt">mc.cores =</span> <span class="kw">detectCores</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-18"><a href="multi-species-trajectories.html#cb28-18"></a><span class="st">    </span><span class="kw">unlist</span>()</span>
+<span id="cb28-19"><a href="multi-species-trajectories.html#cb28-19"></a>  </span>
+<span id="cb28-20"><a href="multi-species-trajectories.html#cb28-20"></a>  <span class="kw">data.frame</span>(<span class="dt">common_name =</span> common_name,</span>
+<span id="cb28-21"><a href="multi-species-trajectories.html#cb28-21"></a>             <span class="dt">date =</span> <span class="kw">parse_raster_dates</span>(abd),</span>
+<span id="cb28-22"><a href="multi-species-trajectories.html#cb28-22"></a>             <span class="dt">prop_pop =</span> abd_region <span class="op">/</span><span class="st"> </span>abd_total,</span>
+<span id="cb28-23"><a href="multi-species-trajectories.html#cb28-23"></a>             <span class="dt">row.names =</span> <span class="ot">NULL</span>)</span>
+<span id="cb28-24"><a href="multi-species-trajectories.html#cb28-24"></a>}</span>
+<span id="cb28-25"><a href="multi-species-trajectories.html#cb28-25"></a>trajectories &lt;-<span class="st"> </span><span class="kw">map2_dfr</span>(sp_dirs, <span class="kw">names</span>(sp_dirs), </span>
+<span id="cb28-26"><a href="multi-species-trajectories.html#cb28-26"></a>                         calculate_trajectory,</span>
+<span id="cb28-27"><a href="multi-species-trajectories.html#cb28-27"></a>                         <span class="dt">region =</span> ks)</span>
+<span id="cb28-28"><a href="multi-species-trajectories.html#cb28-28"></a><span class="kw">write_csv</span>(trajectories,  <span class="st">&quot;data/shorebird_pop-trajectories.csv&quot;</span>)</span></code></pre></div>
 </div>
 <div id="traj-traj" class="section level2">
 <h2><span class="header-section-number">3.5</span> Trajectories</h2>
 <p>Now we can plot these trajectories for the set of shorebird species.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="multi-species-trajectories.html#cb30-1"></a><span class="kw">ggplot</span>(trajectories, <span class="kw">aes</span>(date, prop_pop, <span class="dt">color =</span> common_name)) <span class="op">+</span></span>
-<span id="cb30-2"><a href="multi-species-trajectories.html#cb30-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
-<span id="cb30-3"><a href="multi-species-trajectories.html#cb30-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Week&quot;</span>, </span>
-<span id="cb30-4"><a href="multi-species-trajectories.html#cb30-4"></a>       <span class="dt">y =</span> <span class="st">&quot;Proportion of Population in Kansas&quot;</span>,</span>
-<span id="cb30-5"><a href="multi-species-trajectories.html#cb30-5"></a>       <span class="dt">color =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
-<span id="cb30-6"><a href="multi-species-trajectories.html#cb30-6"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="multi-species-trajectories.html#cb29-1"></a><span class="kw">ggplot</span>(trajectories, <span class="kw">aes</span>(date, prop_pop, <span class="dt">color =</span> common_name)) <span class="op">+</span></span>
+<span id="cb29-2"><a href="multi-species-trajectories.html#cb29-2"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb29-3"><a href="multi-species-trajectories.html#cb29-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Week&quot;</span>, </span>
+<span id="cb29-4"><a href="multi-species-trajectories.html#cb29-4"></a>       <span class="dt">y =</span> <span class="st">&quot;Proportion of Population in Kansas&quot;</span>,</span>
+<span id="cb29-5"><a href="multi-species-trajectories.html#cb29-5"></a>       <span class="dt">color =</span> <span class="ot">NULL</span>) <span class="op">+</span></span>
+<span id="cb29-6"><a href="multi-species-trajectories.html#cb29-6"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
 <p><img src="naoc2020-ebirdst_files/figure-html/traj-traj-1.png" width="\textwidth" style="display: block; margin: auto;" /></p>
+</div>
+<div id="traj-rich" class="section level2">
+<h2><span class="header-section-number">3.6</span> Richness</h2>
+<p>Finally, we can combine these 7 trajectories into a single trajectory giving an estimate of the richness of this group of shorebirds throughout the year.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="multi-species-trajectories.html#cb30-1"></a>richness &lt;-<span class="st"> </span>trajectories <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb30-2"><a href="multi-species-trajectories.html#cb30-2"></a><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></span>
+<span id="cb30-3"><a href="multi-species-trajectories.html#cb30-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n_species =</span> <span class="kw">n_distinct</span>(common_name[prop_pop <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>]))</span>
+<span id="cb30-4"><a href="multi-species-trajectories.html#cb30-4"></a></span>
+<span id="cb30-5"><a href="multi-species-trajectories.html#cb30-5"></a><span class="co"># plot richness</span></span>
+<span id="cb30-6"><a href="multi-species-trajectories.html#cb30-6"></a><span class="kw">ggplot</span>(richness, <span class="kw">aes</span>(date, n_species)) <span class="op">+</span></span>
+<span id="cb30-7"><a href="multi-species-trajectories.html#cb30-7"></a><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></span>
+<span id="cb30-8"><a href="multi-species-trajectories.html#cb30-8"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Week&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Richness&quot;</span>)</span></code></pre></div>
+<p><img src="naoc2020-ebirdst_files/figure-html/traj-rich-1.png" width="\textwidth" style="display: block; margin: auto;" /></p>
 
 </div>
 </div>

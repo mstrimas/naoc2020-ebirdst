@@ -1,7 +1,7 @@
 ---
 output: html_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 # Site Selection
@@ -53,7 +53,7 @@ Let's crop and re-project based on the species specific map parameters.
 
 ```{r seasonal-crop}
 # load mapping parameters
-map_pars <- ebirdst::load_fac_map_parameters(sp_path)
+map_pars <- load_fac_map_parameters(sp_path)
 
 # crop and reproject abundance raster
 abd_breeding_proj <- abd_breeding %>% 
@@ -63,22 +63,15 @@ abd_breeding_proj <- abd_breeding %>%
 
 ## Range-wide site selection {#site-rangewide}
 
-To perform a range-wide site selection, we'll identify the locations with the top 5% of non-zero abundance values across the entire range and visualize those locations. Let's start by cleaning up this raster a little more by removing cells with zero abundance and further trimming the extent to just the area of non-zero breeding season abundance.
-
-```{r rangewide-nz}
-# remove zeroes prior to calculating quantiles
-abd_breeding_proj[abd_breeding_proj == 0] <- NA
-# trim 
-abd_nonzero <- trim(abd_breeding_proj)
-```
-
-New we can calculate the 95th quantile and use it to identify the top 5% of cells.
+To perform a range-wide site selection, we'll identify the locations with the top 5% of non-zero abundance values across the entire range and visualize those locations. 
 
 ```{r rangewide-quantile}
+# remove zeroes prior to calculating quantiles
+abd_breeding_proj[abd_breeding_proj == 0] <- NA
 # calculate the 95th quantile
-q95 <- quantile(abd_nonzero, na.rm = TRUE, probs = 0.95)
+q95 <- quantile(abd_breeding_proj, na.rm = TRUE, probs = 0.95)
 # identify top 5% of cells
-abd_top5 <- abd_nonzero >= q95
+abd_top5 <- abd_breeding_proj >= q95
 ```
 
 Finally let's map these selected sites.
@@ -107,16 +100,18 @@ We can identify the quartiles of the abundance data within Louisiana, essentiall
 ```{r local-quarters}
 # mask to louisiana
 abd_breeding_la <- mask(abd_breeding_proj, la) %>% 
-  trim()
+  raster::trim()
 
 # calculate abundance quartiles
 quarters <- quantile(abd_breeding_la, probs = c(0.25, 0.5, 0.75, 1))
 
 # view
+par(mar = c(0, 0, 0, 0))
 plot(abd_breeding_la, 
      breaks = c(0, quarters), col = abundance_palette(4, season = "weekly"),
      maxpixels = ncell(abd_breeding_la),
      box = FALSE, axes = FALSE)
+plot(st_geometry(la), add = TRUE)
 ```
 
 ### Uncertainty analysis {#site-local-uncertainty}
