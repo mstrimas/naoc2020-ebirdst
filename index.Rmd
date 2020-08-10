@@ -1,6 +1,6 @@
 --- 
 title: "NAOC 2020: eBird Status and Trends"
-author: "Matthew Strimas-Mackey, Tom Auer"
+author: "Matthew Strimas-Mackey and Tom Auer"
 date: "2020-08-10"
 site: bookdown::bookdown_site
 documentclass: book

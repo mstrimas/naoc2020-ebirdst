@@ -105,7 +105,7 @@ abd_breeding_la <- mask(abd_breeding_proj, la) %>%
 # calculate abundance quartiles
 quarters <- quantile(abd_breeding_la, probs = c(0.25, 0.5, 0.75, 1))
 
-# view
+# map
 par(mar = c(0, 0, 0, 0))
 plot(abd_breeding_la, 
      breaks = c(0, quarters), col = abundance_palette(4, season = "weekly"),
@@ -116,7 +116,7 @@ plot(st_geometry(la), add = TRUE)
 
 ### Uncertainty analysis {#site-local-uncertainty}
 
-When using these abundance rasters at a local scale, it's important to be cautious because of the broad spatial scale at which the modeling was conducted. As with any modeled estimates, these abundance estimates have uncertainty associated with them. One approach to dealing with this is to use the spatial estimates of uncertainty (the 10th and 90th quantiles of relative abundance) to assess if locations have overlapping confidence limits.
+When using these abundance rasters at a local scale, it's important to be cautious because of the broad spatial scale at which the modeling was conducted. As with any modeled estimates, these abundance estimates have uncertainty associated with them. One approach to dealing with this is to use the spatial estimates of uncertainty (the 10th and 90th quantiles of relative abundance) to assess if locations that we're considering for selection have overlapping confidence intervals.
 
 Let's start by loading these upper and lower confidence interval raster layers, subsetting to the breeding season within Louisiana, and calculating a breeding season average. 
 

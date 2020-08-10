@@ -23,7 +23,7 @@ library(dplyr)
 
 ## Species list {#species}
 
-Data for 610 North American bird species are available through `ebirdst`. The `ebirdst_runs` object is a data frame of all the available species, including their unique run names and the seasonal dates for each.
+The `ebirdst_runs` object is a data frame listing all the available species.
 
 ```{r species}
 glimpse(ebirdst_runs)
@@ -104,7 +104,7 @@ abd_proj <- abd[[20]] %>%
 
 # map
 par(mar = c(0, 0, 0, 0))
-pal <- abundance_palette(length(map_pars$abundance_bins), season = 'weekly')
+pal <- abundance_palette(length(map_pars$abundance_bins), season = "weekly")
 plot(abd_proj, 
      breaks = c(0, map_pars$abundance_bins), 
      col = c("#e6e6e6", pal), 
