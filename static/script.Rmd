@@ -1,8 +1,8 @@
 # 1. Access
 
-With that background, I want to transition to a brief demonstration of access and using these data within R. Because of the format of this short workshop, i.e. Zoom and a large number of participants, this is going to be a demonstation rather than an interactive workshop. You're not meant to following along with the code, but I will stop for questions and all the notes and code are online, so you can work through them after at your own pace.
+With that background, I want to transition to a brief demonstration of accessing and using these data within R. Because of the format of this short workshop, i.e. Zoom and a large number of participants, this is going to be a demonstration rather than an interactive workshop. You're not meant to following along with the code, but I will stop for questions and all the notes and code are online, so you can work through them after at your own pace.
 
-[eBird Status and Trends](https://ebird.org/science/status-and-trends) provides modeled estimates of the distribution and relative abundance of 610 North American breeding bird species over their full annual cycle at high spatial and temporal resolution. All the data behind the maps you've seen online, and in Tom's presentation, are freely and openly available, hosted by the [Registry of Open Data on AWS](https://registry.opendata.aws/ebirdst/). In addition to being able to download the data from AWS, we maintain the `ebirdst` R package for easily accessing and working with these data. In this lesson, we'll show you how to access these data, load them into your R session, and make a simple map.
+[eBird Status and Trends](https://ebird.org/science/status-and-trends) provides modeled estimates of the distribution and relative abundance of 610 North American breeding bird species over their full annual cycle at high spatial and temporal resolution. All the data behind the maps you've seen online, and in Tom's presentation, are freely and openly available, hosted by the [Registry of Open Data on AWS](https://registry.opendata.aws/ebirdst/). In addition to being able to download the data from AWS, we maintain the `ebirdst` R package for easily accessing and working with these data. In this first lesson, I'll show you how to access these data, load them into your R session, and make a simple map.
 
 ```{r site-libraries}
 library(ebirdst)
@@ -124,7 +124,7 @@ abd_breeding <- abd[["breeding"]]
 abd_breeding
 ```
 
-This layer represents the expected relative abundance of Loggerhead Shrike during the breeding season on standard eBird checklist.
+This layer represents the expected relative abundance of Loggerhead Shrike during the breeding season on a standard eBird checklist.
 
 Let's crop and re-project based on the species specific map parameters.
 
@@ -283,7 +283,7 @@ We begin by downloading data for a suite of 7 shorebird species that all spend a
 species <- c("American Avocet", "Snowy Plover", "Hudsonian Godwit", 
              "Willet", "Marbled Godwit", "Sanderling", 
              "Semipalmated Sandpiper")
-# sp_dirs <- map_chr(species, ebirdst_download) %>% 
+# sp_dirs <- map_chr(species, ebirdst_download) %>%
 #   setNames(species)
 sp_dirs <- map_chr(species, get_species_path) %>% 
   setNames(species)
@@ -302,9 +302,9 @@ calculate_trajectory <- function(x, common_name, region) {
   message(names(x))
   # load and project weekly abundance
   abd <- load_raster("abundance", path = x)
-  r <- st_transform(region, crs = st_crs(abd))
   
   # total abundance within region
+  r <- st_transform(region, crs = st_crs(abd))
   abd_region <- abd %>% 
     crop(r) %>% 
     extract(r, fun = sum)

@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="Lessons for a workshop on accessing and using eBird Status and Trends data given at NAOC 2020" />
   
 
-<meta name="author" content="Matthew Strimas-Mackey, Tom Auer" />
+<meta name="author" content="Matthew Strimas-Mackey and Tom Auer" />
 
 
 <meta name="date" content="2020-08-10" />
@@ -278,7 +278,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb20-5"><a href="site-selection.html#cb20-5"></a><span class="co"># calculate abundance quartiles</span></span>
 <span id="cb20-6"><a href="site-selection.html#cb20-6"></a>quarters &lt;-<span class="st"> </span><span class="kw">quantile</span>(abd_breeding_la, <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>))</span>
 <span id="cb20-7"><a href="site-selection.html#cb20-7"></a></span>
-<span id="cb20-8"><a href="site-selection.html#cb20-8"></a><span class="co"># view</span></span>
+<span id="cb20-8"><a href="site-selection.html#cb20-8"></a><span class="co"># map</span></span>
 <span id="cb20-9"><a href="site-selection.html#cb20-9"></a><span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
 <span id="cb20-10"><a href="site-selection.html#cb20-10"></a><span class="kw">plot</span>(abd_breeding_la, </span>
 <span id="cb20-11"><a href="site-selection.html#cb20-11"></a>     <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, quarters), <span class="dt">col =</span> <span class="kw">abundance_palette</span>(<span class="dv">4</span>, <span class="dt">season =</span> <span class="st">&quot;weekly&quot;</span>),</span>
@@ -288,7 +288,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="naoc2020-ebirdst_files/figure-html/local-quarters-1.png" width="\textwidth" style="display: block; margin: auto;" /></p>
 <div id="site-local-uncertainty" class="section level3">
 <h3><span class="header-section-number">2.5.1</span> Uncertainty analysis</h3>
-<p>When using these abundance rasters at a local scale, it’s important to be cautious because of the broad spatial scale at which the modeling was conducted. As with any modeled estimates, these abundance estimates have uncertainty associated with them. One approach to dealing with this is to use the spatial estimates of uncertainty (the 10th and 90th quantiles of relative abundance) to assess if locations have overlapping confidence limits.</p>
+<p>When using these abundance rasters at a local scale, it’s important to be cautious because of the broad spatial scale at which the modeling was conducted. As with any modeled estimates, these abundance estimates have uncertainty associated with them. One approach to dealing with this is to use the spatial estimates of uncertainty (the 10th and 90th quantiles of relative abundance) to assess if locations that we’re considering for selection have overlapping confidence intervals.</p>
 <p>Let’s start by loading these upper and lower confidence interval raster layers, subsetting to the breeding season within Louisiana, and calculating a breeding season average.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="site-selection.html#cb21-1"></a><span class="co"># load the upper and lower confidence intervals</span></span>
 <span id="cb21-2"><a href="site-selection.html#cb21-2"></a>abd_upper &lt;-<span class="st"> </span><span class="kw">load_raster</span>(<span class="st">&quot;abundance_upper&quot;</span>, <span class="dt">path =</span> sp_path)</span>
